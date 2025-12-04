@@ -46,4 +46,16 @@
     //        }
     //    });
 
+
+    // Add this function to your Service.js file
+
+    this.updateUserService = function (userData) {
+        var response = $http({
+            method: "post",
+            url: "/Def/UpdateUser",
+            data: userData
+        });
+        return response;
+    };
+
 }); 

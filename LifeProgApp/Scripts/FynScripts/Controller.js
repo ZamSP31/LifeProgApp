@@ -146,7 +146,7 @@
 
     //
 
-    
+
 //    $scope.saveRegistration = function () {
 
 
@@ -226,3 +226,153 @@
 //    };
 //});
 
+
+
+    // Add these functions to your RegistrationController in Controller.js
+
+    // SweetAlert function
+
+
+    $scope.showSweetAlert = function () {
+        Swal.fire({
+            title: 'Welcome!',
+            text: 'This is a SweetAlert2 popup with Materialize styling',
+            icon: 'success',
+            confirmButtonText: 'Cool!',
+            confirmButtonColor: '#1976d2',
+            showCancelButton: true,
+            cancelButtonText: 'Close'
+        });
+    };
+
+    // SELECT Button Function
+    $scope.selectUser = function (user) {
+        Swal.fire({
+            title: 'User Selected',
+            html: `
+            <div style="text-align: left;">
+                <p><strong>ID:</strong> ${user.registrationID}</p>
+                <p><strong>First Name:</strong> ${user.firstName}</p>
+                <p><strong>Last Name:</strong> ${user.lastName}</p>
+                <p><strong>Created:</strong> ${new Date(user.createdAt).toLocaleDateString()}</p>
+                <p><strong>Updated:</strong> ${new Date(user.updatedAt).toLocaleDateString()}</p>
+                <p><strong>Status:</strong> ${user.isArchived == 0 ? 'Active' : 'Archived'}</p>
+            </div>
+        `,
+            icon: 'info',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#1976d2'
+        });
+
+        console.log('Selected User:', user);
+    };
+
+    // UPDATE Button Function
+    $scope.updateUser = function (user) {
+        // Store selected user in scope
+        $scope.selectedUser = angular.copy(user);
+
+        // Open Materialize modal
+        var elem = document.getElementById('updateModal');
+        var instance = M.Modal.getInstance(elem);
+        instance.open();
+    };
+
+    // SAVE UPDATE Function (called from modal)
+    $scope.saveUpdate = function () {
+        if (!$scope.selectedUser.firstName || !$scope.selectedUser.lastName) {
+            Swal.fire({
+                title: 'Error!',
+                text: 'First Name and Last Name are required',
+                icon: 'error',
+                confirmButtonColor: '#f44336'
+            });
+            return;
+        }
+
+        // Prepare data for update
+        var updateData = {
+            registrationID: $scope.selectedUser.registrationID,
+            firstName: $scope.selectedUser.firstName,
+            lastName: $scope.selectedUser.lastName
+        };
+
+        // Call service to update (you'll need to create this in Service.js)
+        var updatePromise = LifeProgAppService.updateUserService(updateData);
+
+        updatePromise.then(function (response) {
+            if (response && response.data && response.data.success) {
+                Swal.fire({
+                    title: 'Updated!',
+                    text: 'User has been updated successfully',
+                    icon: 'success',
+                    confirmButtonColor: '#4caf50'
+                });
+
+                // Close modal
+                var elem = document.getElementById('updateModal');
+                var instance = M.Modal.getInstance(elem);
+                instance.close();
+
+                // Refresh data
+                $scope.getDataFunc();
+            } else {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Failed to update user',
+                    icon: 'error',
+                    confirmButtonColor: '#f44336'
+                });
+            }
+        }, function (error) {
+            console.error('Update error:', error);
+            Swal.fire({
+                title: 'Error!',
+                text: 'An error occurred while updating',
+                icon: 'error',
+                confirmButtonColor: '#f44336'
+            });
+        });
+    };
+
+    // ARCHIVE Button Function
+    $scope.archiveUser = function (registrationID) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Do you want to archive this user?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#f44336',
+            cancelButtonColor: '#9e9e9e',
+            confirmButtonText: 'Yes, archive it!',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Call the archive service
+                var archivePromise = LifeProgAppService.archiveDataService(registrationID);
+
+                archivePromise.then(function (response) {
+                    Swal.fire({
+                        title: 'Archived!',
+                        text: 'User has been archived successfully',
+                        icon: 'success',
+                        confirmButtonColor: '#4caf50'
+                    });
+
+                    // Refresh the table data
+                    $scope.getDataFunc();
+                }, function (error) {
+                    console.error('Archive error:', error);
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'An error occurred while archiving',
+                        icon: 'error',
+                        confirmButtonColor: '#f44336'
+                    });
+                });
+            }
+        });
+    };
+
+    // Initialize data on page load
+    $scope.getDataFunc();

@@ -178,8 +178,41 @@ namespace LifeProgApp.Controllers
             {
                 throw new ArgumentException($"An error occured : {ex.Message} : {ex.InnerException} : {ex.StackTrace} ");
             }
-        }   
+        }
 
+
+        // Add this method to your DefController.cs
+
+        [HttpPost]
+        public JsonResult UpdateUser(int registrationID, string firstName, string lastName)
+        {
+            try
+            {
+                using (var db = new Models.AppContext())
+                {
+                    var user = db.tbl_registration.Where(x => x.registrationID == registrationID).FirstOrDefault();
+
+                    if (user != null)
+                    {
+                        user.firstName = firstName;
+                        user.lastName = lastName;
+                        user.updatedAt = DateTime.Now;
+
+                        db.SaveChanges();
+
+                        return Json(new { success = true, message = "User updated successfully" }, JsonRequestBehavior.AllowGet);
+                    }
+                    else
+                    {
+                        return Json(new { success = false, message = "User not found" }, JsonRequestBehavior.AllowGet);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = $"An error occurred: {ex.Message}" }, JsonRequestBehavior.AllowGet);
+            }
+        }
 
 
     }
