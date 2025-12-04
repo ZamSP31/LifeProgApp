@@ -1,0 +1,266 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+        
+    <style>
+
+        /* Header (same as login page) */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 40px;
+            border-bottom: 1px solid #ddd;
+            background: #fff;
+        }
+
+            .navbar .logo {
+                display: flex;
+                align-items: center;
+                font-weight: bold;
+                font-size: 16px;
+            }
+
+                .navbar .logo span {
+                    margin-left: 6px;
+                }
+
+            .navbar ul {
+                list-style: none;
+                display: flex;
+                gap: 30px;
+            }
+
+                .navbar ul li {
+                    font-size: 14px;
+                    cursor: pointer;
+                    color: #666;
+                }
+
+                    .navbar ul li:hover {
+                        color: #000;
+                    }
+
+            .navbar .user-actions {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .navbar button {
+                border: 1px solid #000;
+                background: #fff;
+                padding: 5px 12px;
+                border-radius: 8px;
+                cursor: pointer;
+            }
+
+            .navbar img {
+                width: 28px;
+                height: 28px;
+                border-radius: 50%;
+            }
+
+        /* Footer */
+        footer {
+            background-color: #111;
+            color: #fff;
+            padding: 40px 20px;
+            font-family: Arial, sans-serif;
+            margin-top: 50px;
+        }
+
+        .footer-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-section h4 {
+            margin-bottom: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #f0f0f0;
+        }
+
+        .footer-logo {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .footer-section p {
+            font-size: 14px;
+            line-height: 1.5;
+            color: #bbb;
+        }
+
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+            .footer-section ul li {
+                margin-bottom: 8px;
+            }
+
+        .footer-section a {
+            color: #bbb;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+            .footer-section a:hover {
+                color: #fff;
+            }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            margin-top: 20px;
+            border-top: 1px solid #333;
+            font-size: 14px;
+            color: #888;
+        }
+
+        .social-links li a:hover {
+            text-decoration: underline;
+        }
+
+
+        .nav-link {
+            display: inline-block;
+            padding: 8px 16px;
+            text-decoration: none;
+            color: #333;
+            position: relative;
+            transition: transform 0.2s ease, color 0.2s ease;
+        }
+
+            .nav-link::after {
+                content: "";
+                position: absolute;
+                left: 0;
+                bottom: 0;
+                height: 2px;
+                width: 0%;
+                background-color: #333;
+                transition: width 0.3s ease;
+            }
+
+            .nav-link:hover {
+                color: #000;
+                transform: translateY(-3px);
+            }
+
+                .nav-link:hover::after {
+                    width: 100%;
+                }
+
+    </style>
+
+</head>
+
+
+<body ng-app="LifeProgApp" ng-controller="LifeProgAppController">
+
+
+
+    <!-- Header -->
+    <div class="navbar">
+        <div class="logo"> <span>One %</span></div>
+        <ul>
+            <li>
+                <a ng-click="redirectToDashboard()" class="nav-link">Dashboard</a>
+            </li>
+            <li>
+                <a ng-click="redirectToGoals()" class="nav-link">Goals</a>
+
+            </li>
+            <li>
+                <a ng-click="redirectToProgress()" class="nav-link">Progress</a>
+            </li>
+
+        </ul>
+        <div class="user-actions">
+            <a ng-click="redirectToLogin()" class="nav-link">Login</a>
+            <a ng-click="redirectToRegistration()" class="nav-link">Sign-Up</a>
+
+            
+            <img src="https://i.pravatar.cc/28" alt="User Profile">
+        </div>
+    </div>
+
+    <div>
+        @RenderBody()
+    </div>
+
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-section">
+                <div class="footer-logo">One %</div>
+                <p>
+                    Transform your daily habits into meaningful progress.
+                    Every small step brings you closer to a better version of yourself.
+                </p>
+            </div>
+
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="#">Support</a></li>
+                    <li><a href="#">FAQs</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h4>Connect</h4>
+                <ul class="social-links">
+                    <li><a href="#">Facebook</a></li>
+                    <li><a href="#">Instagram</a></li>
+                    <li><a href="#">Twitter</a></li>
+                    <li><a href="#">LinkedIn</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h4>Contact</h4>
+                <p>Email: support@onepercent.com</p>
+                <p>Phone: +63 900 000 0000</p>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>© 2025 One %. All rights reserved.</p>
+        </div>
+    </footer>
+
+
+
+
+
+    <script src="~/Scripts/jquery-3.7.0.min.js"></script>
+    <script src="~/Scripts/angular.min.js"></script>
+    <script src="~/Scripts/FynScripts/Module.js"></script>
+    <script src="~/Scripts/FynScripts/Service.js"></script>
+    <script src="~/Scripts/FynScripts/Controller.js"></script>
+
+</body>
+</html>

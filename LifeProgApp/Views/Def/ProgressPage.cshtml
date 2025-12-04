@@ -1,0 +1,585 @@
+﻿@{
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>One % Dashboard</title>
+    <style>
+
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background: #fafafa;
+            color: #111;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 24px;
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 24px 24px 8px;
+            background: #fff;
+            border-bottom: 1px solid #eee;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+            .logo svg {
+                width: 24px;
+                height: 24px;
+            }
+
+        nav {
+            display: flex;
+            gap: 32px;
+            font-weight: 500;
+            font-size: 14px;
+            color: #666;
+        }
+
+            nav a:hover {
+                color: #111;
+            }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .icon-btn {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .profile-pic {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: #fff;
+            padding: 80px 24px 80px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+
+            .hero h1 {
+                margin: 0 0 12px 0;
+                font-weight: 600;
+                font-size: 22px;
+                color: #111;
+            }
+
+            .hero p {
+                margin: 0 0 24px;
+                font-size: 14px;
+                color: #666;
+                line-height: 1.4;
+            }
+
+        .btn-group {
+            display: inline-flex;
+            gap: 12px;
+        }
+
+        .btn-primary {
+            background: #111;
+            color: #fff;
+            border: none;
+            padding: 10px 24px;
+            font-weight: 600;
+            font-size: 14px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+            .btn-primary:hover {
+                background: #333;
+            }
+
+        .btn-secondary {
+            background: #fff;
+            color: #111;
+            border: 1px solid #ccc;
+            padding: 10px 24px;
+            font-weight: 600;
+            font-size: 14px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+            .btn-secondary:hover {
+                border-color: #111;
+            }
+
+        /* Main Content Grid */
+        main {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+            margin-top: 24px;
+            padding: 0 24px 48px;
+        }
+
+        /* Left Cards */
+        .card {
+            background: #fff;
+            border-radius: 8px;
+            padding: 24px 32px;
+            box-shadow: 0 0 8px rgb(0 0 0 / 0.05);
+            font-size: 14px;
+            color: #444;
+        }
+
+            .card h3 {
+                margin: 0 0 12px 0;
+                font-weight: 600;
+                color: #111;
+                font-size: 16px;
+            }
+
+            .card small {
+                color: #888;
+                font-weight: 400;
+            }
+
+        /* Quests */
+        .quests-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            font-size: 12px;
+            color: #999;
+        }
+
+        .quest-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .quest-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            padding: 8px 16px;
+            margin-bottom: 12px;
+            background: #fafafa;
+        }
+
+            .quest-item.completed {
+                text-decoration: line-through;
+                color: #999;
+            }
+
+        .quest-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 13px;
+            color: #666;
+            flex-grow: 1;
+        }
+
+            .quest-info .desc {
+                font-size: 11px;
+                color: #aaa;
+                margin-left: 24px;
+            }
+
+        .quest-xp {
+            font-weight: 600;
+            font-size: 12px;
+            color: #111;
+        }
+
+            .quest-xp .check {
+                margin-left: 6px;
+                color: #111;
+            }
+
+        input[type="checkbox"] {
+            accent-color: #111;
+            cursor: pointer;
+        }
+
+        .star {
+            margin-left: 10px;
+            width: 18px;
+            height: 18px;
+            fill: #ccc;
+            cursor: pointer;
+        }
+
+            .star:hover {
+                fill: #ffb400;
+            }
+
+        /* Goals */
+        .goal {
+            margin-bottom: 20px;
+        }
+
+        .goal-title {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            font-size: 13px;
+            margin-bottom: 6px;
+            color: #111;
+        }
+
+        .goal-subtitle {
+            font-size: 11px;
+            color: #777;
+            margin-bottom: 6px;
+        }
+
+        .progress-bar-bg {
+            background: #eee;
+            border-radius: 12px;
+            height: 10px;
+            width: 100%;
+        }
+
+        .progress-bar-fill {
+            background: #111;
+            height: 10px;
+            border-radius: 12px;
+            width: 0%;
+        }
+
+        /* Right Sidebar */
+        aside {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .progress-card, .stats-card, .achievements-card {
+            background: #fff;
+            border-radius: 8px;
+            padding: 24px 24px 24px;
+            box-shadow: 0 0 8px rgb(0 0 0 / 0.05);
+            font-size: 14px;
+            color: #444;
+        }
+
+        /* Progress Card */
+        .progress-header {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 16px;
+            color: #111;
+        }
+
+        .progress-circle {
+            margin: 0 auto 12px;
+            position: relative;
+            width: 72px;
+            height: 72px;
+        }
+
+            .progress-circle svg {
+                transform: rotate(-90deg);
+            }
+
+            .progress-circle circle {
+                fill: none;
+                stroke-width: 8;
+                stroke-linecap: round;
+            }
+
+        .progress-bg {
+            stroke: #eee;
+        }
+
+        .progress-fg {
+            stroke: #111;
+            stroke-dasharray: 251.2; /* circumference 2 * pi * r (r=40) */
+            stroke-dashoffset: 100; /* dynamic */
+            transition: stroke-dashoffset 0.3s ease;
+        }
+
+        .progress-number {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -60%);
+            font-weight: 600;
+            font-size: 22px;
+            color: #111;
+        }
+
+        .progress-label {
+            text-align: center;
+            font-size: 12px;
+            color: #888;
+        }
+
+        .progress-bar-horizontal {
+            height: 6px;
+            border-radius: 8px;
+            background: #eee;
+            margin-top: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .progress-bar-horizontal .fill {
+                background: #111;
+                height: 6px;
+                width: 75%;
+            }
+
+        .progress-bar-text {
+            font-size: 11px;
+            color: #888;
+            text-align: center;
+            margin-top: 8px;
+        }
+
+        /* Stats Card */
+        .stats-card h4 {
+            font-weight: 600;
+            font-size: 14px;
+            color: #111;
+            margin-bottom: 12px;
+        }
+
+        .stats-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: 12px;
+            color: #666;
+        }
+
+            .stats-list li {
+                margin-bottom: 6px;
+            }
+
+            .stats-list strong {
+                float: right;
+                font-weight: 600;
+                color: #111;
+            }
+
+        /* Achievements Card */
+        .achievements-card h4 {
+            font-weight: 600;
+            font-size: 14px;
+            color: #111;
+            margin-bottom: 12px;
+        }
+
+        .achievement-items {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .achievement-item {
+            border: 1px solid #eee;
+            border-radius: 6px;
+            padding: 12px 16px;
+            font-size: 11px;
+            color: #666;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: default;
+            flex: 1;
+            justify-content: center;
+        }
+
+            .achievement-item svg {
+                width: 16px;
+                height: 16px;
+                fill: #666;
+            }
+
+            .achievement-item:not(:last-child) {
+                margin-right: 12px;
+            }
+
+            .achievement-item:hover {
+                border-color: #111;
+                color: #111;
+            }
+
+       
+
+        /* Utilities */
+        .line-through {
+            text-decoration: line-through;
+            color: #999;
+        }
+
+        
+    </style>
+</head>
+<body>
+    
+    <section class="hero" role="region" aria-label="Hero Section">
+        <h1>Level Up Your Life</h1>
+        <p>Transform your daily routine into an adventure. Complete quests, achieve goals, and unlock your potential.</p>
+        <div class="btn-group">
+            <button class="btn-primary">Start Your Journey</button>
+            <button class="btn-secondary">View Demo</button>
+        </div>
+    </section>
+
+    <main class="container" role="main">
+        <section aria-labelledby="quests-title" class="card">
+            <div class="quests-header">
+                <div>Today's Quests</div>
+                <div style="font-size:12px; color:#bbb;">January 15, 2025</div>
+            </div>
+            <ul class="quest-list">
+                <li class="quest-item">
+                    <label class="quest-info" for="meditation">
+                        <input type="checkbox" id="meditation" name="meditation" aria-describedby="desc-meditation" />
+                        Morning Meditation
+                        <span class="desc" id="desc-meditation">10 minutes of mindfulness</span>
+                    </label>
+                    <div class="quest-xp">
+                        +50 XP
+                        <svg class="star" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                        </svg>
+                    </div>
+                </li>
+                <li class="quest-item completed">
+                    <label class="quest-info" for="read-pages">
+                        <input type="checkbox" id="read-pages" name="read-pages" checked disabled />
+                        <s>Read 20 Pages</s>
+                        <span class="desc" id="desc-read">Continue current book</span>
+                    </label>
+                    <div class="quest-xp">
+                        +30 XP
+                        <svg class="check" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:18px; height:18px; margin-left:4px;">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                    </div>
+                </li>
+                <li class="quest-item">
+                    <label class="quest-info" for="walk">
+                        <input type="checkbox" id="walk" name="walk" aria-describedby="desc-walk" />
+                        30-Minute Walk
+                        <span class="desc" id="desc-walk">Get some fresh air and exercise</span>
+                    </label>
+                    <div class="quest-xp">
+                        +40 XP
+                        <svg class="star" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                        </svg>
+                    </div>
+                </li>
+            </ul>
+        </section>
+
+        <section aria-labelledby="goals-title" class="card" >
+            <h3 id="goals-title">Long-term Goals</h3>
+
+            <div class="goal">
+                <div class="goal-title">
+                    <span>Learn Spanish</span>
+                    <span>3 months</span>
+                </div>
+                <div class="goal-subtitle">33% complete • 87 days remaining</div>
+                <div class="progress-bar-bg" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="33">
+                    <div class="progress-bar-fill" style="width: 33%;"></div>
+                </div>
+            </div>
+
+            <div class="goal">
+                <div class="goal-title">
+                    <span>Run a 5K</span>
+                    <span>2 months</span>
+                </div>
+                <div class="goal-subtitle">50% complete • 30 days remaining</div>
+                <div class="progress-bar-bg" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
+                    <div class="progress-bar-fill" style="width: 50%;"></div>
+                </div>
+            </div>
+        </section>
+
+        <aside>
+            <section class="progress-card" aria-labelledby="progress-title">
+                <h4 id="progress-title">Your Progress</h4>
+                <div class="progress-circle" role="img" aria-label="Current level 12">
+                    <svg width="80" height="80" viewBox="0 0 80 80">
+                        <circle class="progress-bg" r="40" cx="40" cy="40" />
+                        <circle class="progress-fg" r="40" cx="40" cy="40" style="stroke-dashoffset: 150;" />
+                    </svg>
+                    <div class="progress-number">12</div>
+                </div>
+                <div class="progress-label">Current Level</div>
+                <div class="progress-bar-horizontal" aria-label="XP progress to next level">
+                    <div class="fill"></div>
+                </div>
+                <div class="progress-bar-text">750 / 1000 XP to next level</div>
+            </section>
+
+            <section class="stats-card" aria-labelledby="weekly-stats-title">
+                <h4 id="weekly-stats-title">Weekly Stats</h4>
+                <ul class="stats-list">
+                    <li>Quests Completed <strong>18/21</strong></li>
+                    <li>XP Earned <strong>890</strong></li>
+                    <li>Streak <strong>7 days</strong></li>
+                </ul>
+            </section>
+
+            <section class="achievements-card" aria-labelledby="achievements-title">
+                <h4 id="achievements-title">Achievements</h4>
+                <div class="achievement-items">
+                    <div class="achievement-item" title="7-Day Streak">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5L20 7" /></svg>7-Day Streak
+                    </div>
+                    <div class="achievement-item" title="Bookworm">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19h16v-2H4zm0-4h16v-2H4z" /></svg>Bookworm
+                    </div>
+                    <div class="achievement-item" title="Fitness Pro">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a4 4 0 1 0 4 4 4 4 0 0 0-4-4zm0 9a7 7 0 0 0-7 7v1h14v-1a7 7 0 0 0-7-7z" /></svg>Fitness Pro
+                    </div>
+                </div>
+            </section>
+        </aside>
+    </main>
+
+    
+
+</body>
+</html>
+

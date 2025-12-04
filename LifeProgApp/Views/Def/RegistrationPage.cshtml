@@ -1,0 +1,219 @@
+﻿@{
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+
+<style>
+    /* YOUR STYLES - UNTOUCHED */
+    .form-section {
+        background: #fff;
+        padding: 30px;
+        border-radius: 10px;
+        margin-top: 30px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .section-title {
+        border-bottom: 1px solid #eee;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+        font-weight: 600;
+    }
+
+    .btn-black {
+        background-color: black !important;
+    }
+
+    /* Validation colors */
+    input.valid, select.valid {
+        border-bottom: 2px solid #2196F3 !important; /* Blue */
+        box-shadow: none !important;
+    }
+
+    input.invalid, select.invalid {
+        border-bottom: 2px solid #FF9800 !important; /* Orange */
+        box-shadow: none !important;
+    }
+
+    .helper-text {
+        font-size: 12px;
+    }
+
+        /* Required text color (red for all fields) */
+        .helper-text.required {
+            color: red !important;
+            font-weight: bold;
+        }
+
+        /* Instructional text color */
+        .helper-text.instruction {
+            color: #757575 !important; /* Gray for instructions */
+        }
+
+
+    /* Radio button validation */
+    .radio-group.valid label span {
+        color: #2196F3; /* Blue */
+    }
+
+    .radio-group.invalid label span {
+        color: #FF9800; /* Orange */
+    }
+</style>
+
+<div ng-controller="RegistrationController">
+
+    <div class="container">
+        <form name="regForm" class="form-section" ng-submit="saveRegistration()" novalidate>
+
+            <div class="section-title">Personal Info</div>
+
+            <div class="input-field">
+                <input type="text"
+                       name="firstName"
+                       id="firstName"
+                       ng-model="firstName"
+                       required
+                       ng-minlength="2"
+                       ng-maxlength="20"
+                       maxlength="20"
+                       ng-class="{
+                       'valid': regForm.firstName.$touched && regForm.firstName.$valid,
+                       'invalid': regForm.firstName.$touched && regForm.firstName.$invalid
+                   }">
+                <label for="firstName">First Name</label>
+
+                <span class="helper-text required"
+                      ng-show="regForm.firstName.$touched && regForm.firstName.$error.required">
+                    Required
+                </span>
+
+                <span class="helper-text"
+                      ng-show="regForm.firstName.$touched && regForm.firstName.$error.minlength">
+                    Must be at least 2 characters
+                </span>
+
+                <span class="helper-text"
+                      ng-show="regForm.firstName.$touched && regForm.firstName.$error.maxlength">
+                    Maximum 20 characters only
+                </span>
+
+                <span class="helper-text instruction">Enter 2–20 characters</span>
+            </div>
+
+
+            <div class="input-field">
+                <input type="text"
+                       name="lastName"
+                       id="lastName"
+                       ng-model="lastName"
+                       required
+                       ng-maxlength="15"
+                       maxlength="15"
+                       ng-class="{
+                       'valid': regForm.lastName.$touched && regForm.lastName.$valid,
+                       'invalid': regForm.lastName.$touched && regForm.lastName.$invalid
+                   }">
+                <label for="lastName">Last Name</label>
+
+                <span class="helper-text required"
+                      ng-show="regForm.lastName.$touched && regForm.lastName.$error.required">
+                    Required
+                </span>
+
+                <span class="helper-text"
+                      ng-show="regForm.lastName.$touched && regForm.lastName.$error.maxlength">
+                    Maximum 15 characters only
+                </span>
+
+                <span class="helper-text instruction">Enter up to 15 characters</span>
+            </div>
+
+            <label>Gender</label>
+            <div class="radio-group"
+                 ng-class="{'valid': regForm.gender.$touched && regForm.gender.$valid,
+                            'invalid': regForm.gender.$touched && regForm.gender.$invalid}">
+                <p>
+                    <label>
+                        <input type="radio" name="gender" ng-model="gender" value="Male" required>
+                        <span>Male</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="gender" ng-model="gender" value="Female">
+                        <span>Female</span>
+                    </label>
+                </p>
+                <span class="helper-text required" ng-show="regForm.gender.$touched && regForm.gender.$error.required">Required</span>
+                <span class="helper-text instruction">Select your gender</span>
+            </div>
+
+            <div class="input-field">
+                <input type="email"
+                       name="email"
+                       id="email"
+                       ng-model="email"
+                       required
+                       ng-class="{'valid': regForm.email.$touched && regForm.email.$valid,
+                              'invalid': regForm.email.$touched && regForm.email.$invalid}">
+                <label for="email">Email</label>
+                <span class="helper-text required" ng-show="regForm.email.$touched && regForm.email.$error.required">Required</span>
+
+                <span class="helper-text instruction">Enter a valid email address</span>
+            </div>
+
+            <div class="input-field">
+                <input type="password"
+                       name="password"
+                       id="password"
+                       ng-model="password"
+                       required
+                       ng-minlength="6"
+                       ng-maxlength="6"
+                       maxlength="6"
+                       ng-class="{
+                        'valid': regForm.password.$touched && regForm.password.$valid,
+                        'invalid': regForm.password.$touched && regForm.password.$invalid
+                   }">
+                <label for="password">Password</label>
+
+                <span class="helper-text required"
+                      ng-show="regForm.password.$touched && regForm.password.$error.required">
+                    Required
+                </span>
+
+                <span class="helper-text"
+                      ng-show="regForm.password.$touched && regForm.password.$error.maxlength">
+                    Must be 6 characters
+                </span>
+
+                <span class="helper-text instruction">Password must be exactly 6 characters</span>
+            </div>
+
+
+            <div class="right-align" style="margin-top:20px;">
+                <button type="reset" class="btn grey lighten-1" ng-click="cancelData()">Cancel</button>
+                <button type="submit" class="btn btn-black" ng-disabled="regForm.$invalid">Register</button>
+            </div>
+        </form>
+
+        <table ng-if="registeredUsers.length > 0" class="striped" style="margin-top:30px;">
+            <thead>
+                <tr>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Email</th>
+                    <th>Gender</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="u in registeredUsers">
+                    <td>{{ u.FirstName }}</td>
+                    <td>{{ u.LastName }}</td>
+                    <td>{{ u.Email }}</td>
+                    <td>{{ u.Gender }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+</div>
