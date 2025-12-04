@@ -1,0 +1,205 @@
+@{
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- SweetAlert2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .btn-container {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center mb-4">User Management System</h1>
+
+        
+        
+        <!-- User Table -->
+        <div class="table-container">
+            <h3>User Information</h3>
+            <table class="table table-striped table-bordered table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Address</th>
+                        <th>City</th>
+                        <th>State</th>
+                        <th>Zip Code</th>
+                        <th>Country</th>
+                        <th>Date of Birth</th>
+                        <th>Gender</th>
+                        <th>Status</th>
+                        <th>Created Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>John</td>
+                        <td>Doe</td>
+                        <td>john.doe@example.com</td>
+                        <td>(555) 123-4567</td>
+                        <td>123 Main St</td>
+                        <td>New York</td>
+                        <td>NY</td>
+                        <td>10001</td>
+                        <td>USA</td>
+                        <td>1990-05-15</td>
+                        <td>Male</td>
+                        <td><span class="badge bg-success">Active</span></td>
+                        <td>2023-01-15</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Jane</td>
+                        <td>Smith</td>
+                        <td>jane.smith@example.com</td>
+                        <td>(555) 987-6543</td>
+                        <td>456 Oak Ave</td>
+                        <td>Los Angeles</td>
+                        <td>CA</td>
+                        <td>90001</td>
+                        <td>USA</td>
+                        <td>1985-08-22</td>
+                        <td>Female</td>
+                        <td><span class="badge bg-success">Active</span></td>
+                        <td>2023-02-20</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Michael</td>
+                        <td>Johnson</td>
+                        <td>michael.j@example.com</td>
+                        <td>(555) 456-7890</td>
+                        <td>789 Pine Rd</td>
+                        <td>Chicago</td>
+                        <td>IL</td>
+                        <td>60601</td>
+                        <td>USA</td>
+                        <td>1992-11-30</td>
+                        <td>Male</td>
+                        <td><span class="badge bg-warning">Pending</span></td>
+                        <td>2023-03-10</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>Emily</td>
+                        <td>Williams</td>
+                        <td>emily.w@example.com</td>
+                        <td>(555) 321-0987</td>
+                        <td>321 Elm St</td>
+                        <td>Houston</td>
+                        <td>TX</td>
+                        <td>77001</td>
+                        <td>USA</td>
+                        <td>1988-03-17</td>
+                        <td>Female</td>
+                        <td><span class="badge bg-success">Active</span></td>
+                        <td>2023-04-05</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>David</td>
+                        <td>Brown</td>
+                        <td>david.brown@example.com</td>
+                        <td>(555) 654-3210</td>
+                        <td>654 Maple Dr</td>
+                        <td>Phoenix</td>
+                        <td>AZ</td>
+                        <td>85001</td>
+                        <td>USA</td>
+                        <td>1995-07-08</td>
+                        <td>Male</td>
+                        <td><span class="badge bg-danger">Inactive</span></td>
+                        <td>2023-05-12</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // SweetAlert Button Click Event
+            $('#swalButton').click(function () {
+                Swal.fire({
+                    title: 'Welcome!',
+                    text: 'This is a SweetAlert2 popup example',
+                    icon: 'success',
+                    confirmButtonText: 'Cool!',
+                    confirmButtonColor: '#0d6efd',
+                    showCancelButton: true,
+                    cancelButtonText: 'Close',
+                    footer: '<a href="#">Learn more about SweetAlert2</a>'
+                });
+            });
+
+            // Example: Add SweetAlert on row click
+            $('tbody tr').click(function () {
+                const firstName = $(this).find('td:eq(1)').text();
+                const lastName = $(this).find('td:eq(2)').text();
+                const email = $(this).find('td:eq(3)').text();
+
+                Swal.fire({
+                    title: `${firstName} ${lastName}`,
+                    html: `
+                            <p><strong>Email:</strong> ${email}</p>
+                            <p>Click to view more details</p>
+                        `,
+                    icon: 'info',
+                    confirmButtonText: 'OK'
+                });
+            });
+        });
+    </script>
+</body>
+</html>

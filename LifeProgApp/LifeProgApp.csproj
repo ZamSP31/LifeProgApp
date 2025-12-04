@@ -1043,6 +1043,7 @@
     <Content Include="Views\Def\GoalsPage.cshtml" />
     <Content Include="Views\Def\ProgressPage.cshtml" />
     <Content Include="Views\Def\LoginPage.cshtml" />
+    <Content Include="Views\Def\OverviewPage.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

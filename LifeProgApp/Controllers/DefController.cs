@@ -27,6 +27,10 @@ namespace LifeProgApp.Controllers
             return View();
         }
 
+        public ActionResult OverviewPage()
+        {
+            return View();
+        }
 
 
 

@@ -109,8 +109,7 @@
             var getData = LifeProgAppService.getDataService();
             getData.then(function (returnedData) {
                 $scope.tableValue = returnedData.data;
-
-            }
+            });
 
             };
 
