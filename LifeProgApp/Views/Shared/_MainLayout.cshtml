@@ -6,12 +6,11 @@
     <title>@ViewBag.Title</title>
     <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-
-    <!-- Compiled and minified JavaScript -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    
-        
+
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
     <style>
 
         /* Header (same as login page) */
@@ -29,6 +28,7 @@
                 align-items: center;
                 font-weight: bold;
                 font-size: 16px;
+                cursor: pointer;
             }
 
                 .navbar .logo span {
@@ -148,6 +148,7 @@
             color: #333;
             position: relative;
             transition: transform 0.2s ease, color 0.2s ease;
+            cursor: pointer;
         }
 
             .nav-link::after {
@@ -169,7 +170,6 @@
                 .nav-link:hover::after {
                     width: 100%;
                 }
-
     </style>
 
 </head>
@@ -181,25 +181,27 @@
 
     <!-- Header -->
     <div class="navbar">
-        <div class="logo"> <span>One %</span></div>
+        <div class="logo" ng-click="redirectToDashboard()"> <span>One %</span></div>
         <ul>
             <li>
                 <a ng-click="redirectToDashboard()" class="nav-link">Dashboard</a>
             </li>
             <li>
                 <a ng-click="redirectToGoals()" class="nav-link">Goals</a>
-
             </li>
             <li>
                 <a ng-click="redirectToProgress()" class="nav-link">Progress</a>
             </li>
-
+            <li>
+                <a ng-click="redirectToOverview()" class="nav-link">Overview</a>
+            </li>
+            <li>
+                <a ng-click="redirectToGallery()" class="nav-link">Gallery</a>
+            </li>
         </ul>
         <div class="user-actions">
             <a ng-click="redirectToLogin()" class="nav-link">Login</a>
             <a ng-click="redirectToRegistration()" class="nav-link">Sign-Up</a>
-
-            
             <img src="https://i.pravatar.cc/28" alt="User Profile">
         </div>
     </div>
@@ -253,14 +255,26 @@
     </footer>
 
 
-
-
-
+    <!-- Load Scripts in correct order -->
     <script src="~/Scripts/jquery-3.7.0.min.js"></script>
     <script src="~/Scripts/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script src="~/Scripts/FynScripts/Module.js"></script>
     <script src="~/Scripts/FynScripts/Service.js"></script>
     <script src="~/Scripts/FynScripts/Controller.js"></script>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var elems = document.querySelectorAll('.carousel');
+            M.Carousel.init(elems, {
+                fullWidth: true,
+                indicators: true
+            });
+        });
+    </script>
 
 </body>
 </html>

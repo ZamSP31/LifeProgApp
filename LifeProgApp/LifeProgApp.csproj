@@ -190,7 +190,9 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Context\AppContext.cs" />
+    <Compile Include="Models\Map\tblImagesMap.cs" />
     <Compile Include="Models\Map\tblRegistrationMap.cs" />
+    <Compile Include="Models\tblImagesModel.cs" />
     <Compile Include="Models\tblRegistrationModel.cs" />
     <Compile Include="Models\UserInformation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -1044,6 +1046,7 @@
     <Content Include="Views\Def\ProgressPage.cshtml" />
     <Content Include="Views\Def\LoginPage.cshtml" />
     <Content Include="Views\Def\OverviewPage.cshtml" />
+    <Content Include="Views\Def\GalleryPage.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

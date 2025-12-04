@@ -16,7 +16,7 @@ namespace LifeProgApp
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
-                defaults: new { controller = "Def", action = "AboutPage", id = UrlParameter.Optional }
+                defaults: new { controller = "Def", action = "DashboardPage", id = UrlParameter.Optional }
             );
         }
     }

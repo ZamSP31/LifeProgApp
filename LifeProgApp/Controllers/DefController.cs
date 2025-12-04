@@ -1,17 +1,20 @@
 ﻿using LifeProgApp.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Services.Description;
 
 namespace LifeProgApp.Controllers
 {
     public class DefController : Controller
     {
-        private object getData;
+        // ====================================================================
+        // PAGE NAVIGATION ACTIONS
+        // ====================================================================
 
-        // GET: _DefCon
         public ActionResult Index()
         {
             return View();
@@ -32,50 +35,30 @@ namespace LifeProgApp.Controllers
             return View();
         }
 
-
-
+        public ActionResult GalleryPage()
+        {
+            return View();
+        }
 
         public ActionResult RegistrationPage()
         {
-           
             return View();
         }
 
         public ActionResult DashboardPage()
         {
-
             return View();
         }
 
         public ActionResult GoalsPage()
         {
-
             return View();
         }
 
 
-
-       
-
-        //[HttpPost]
-        //public JsonResult UpdateDatabase()
-        //{
-        //    // --- TODO: INSERT SQL LOGIC HERE ---
-
-        //    // Mock Data to send back to the table
-        //    var logs = new List<object>
-        //    {
-        //        new { Id = 101, Action = "Inventory Check", Status = "Success", Time = DateTime.Now.ToShortTimeString() },
-        //        new { Id = 102, Action = "Update Prices", Status = "Pending", Time = DateTime.Now.ToShortTimeString() }
-        //    };
-
-        //    // AllowGet is required in MVC 5 for JSON returns sometimes, though usually fine for Post
-        //    return Json(new { success = true, data = logs });
-        //}
-
-
-
-
+        // ====================================================================
+        // DATA MANIPULATION METHODS
+        // ====================================================================
 
         public void AddData()
         {
@@ -96,68 +79,57 @@ namespace LifeProgApp.Controllers
             }
             catch (Exception ex)
             {
-                throw new ArgumentException($"An error occured : {ex.Message} : {ex.InnerException} : {ex.StackTrace} ");
+                throw new ArgumentException($"An error occured : {ex.Message} : {ex.InnerException} : {ex.StackTrace}");
             }
         }
 
-            public void UpdateData()
+        public void UpdateData()
+        {
+            try
             {
-                try
+                using (var db = new Models.AppContext())
                 {
-                    using (var db = new Models.AppContext())
+                    var getData = db.tbl_registration.Where(x => x.registrationID == 1).FirstOrDefault();
+
+                    if (getData != null)
                     {
-                        // 1. You fetch the data into the variable 'registration'
-                        var getData = db.tbl_registration.Where(x => x.registrationID == 1).FirstOrDefault();
+                        getData.firstName = "UpdatedName";
+                        getData.lastName = "UpdatedLastName";
+                        getData.createdAt = DateTime.Now;
+                        getData.updatedAt = DateTime.Now;
 
-                        // CRITICAL FIX: Check if data exists first to prevent a crash
-                        if (getData != null)
-                        {
-                        // 2. Use 'registration' here, NOT 'getData'
-                            getData.firstName = "UpdatedName";
-                            getData.lastName = "UpdatedLastName";
-                            getData.createdAt = DateTime.Now;
-                            getData.updatedAt = DateTime.Now;
-
-                            // 3. Save the changes to the database
-                            db.SaveChanges();
-                        }
+                        db.SaveChanges();
                     }
                 }
-                catch (Exception ex)
-                {
-                    throw new ArgumentException($"An error occured : {ex.Message}");
-                }
             }
+            catch (Exception ex)
+            {
+                throw new ArgumentException($"An error occured : {ex.Message}");
+            }
+        }
 
 
-
-        // get data process (changes)
-        // 1. GetData()
-        // 2. getData(int archivedID)
-        // 3. var getData = db.tbl_registration.Where(x => x.isArchived == 0).ToList();
-        // 4. var getData = db.tbl_registration.Where(x => x.isArchived == archived).ToList();
-        // 5. 
+        // ====================================================================
+        // JSON RESULT METHODS
+        // ====================================================================
 
         public JsonResult GetData()
-                        {
-                try
+        {
+            try
+            {
+                using (var db = new Models.AppContext())
                 {
-                    using (var db = new Models.AppContext())
-                    {
-                        var getData = db.tbl_registration.Where(x => x.isArchived == 0).ToList();
-                        return Json(new { success = true, data = getData }, JsonRequestBehavior.AllowGet);
-                    }
+                    var getData = db.tbl_registration.Where(x => x.isArchived == 0).ToList();
+                    return Json(new { success = true, data = getData }, JsonRequestBehavior.AllowGet);
                 }
-                catch (Exception ex)
-                {
-                    throw new ArgumentException($"An error occured : {ex.Message} : {ex.InnerException} : {ex.StackTrace} "); 
-                }
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException($"An error occured : {ex.Message} : {ex.InnerException} : {ex.StackTrace}");
+            }
         }
 
-
-
-            //archive data process
-            public JsonResult ArchiveData(int registrationID)
+        public JsonResult ArchiveData(int registrationID)
         {
             try
             {
@@ -168,20 +140,14 @@ namespace LifeProgApp.Controllers
                     db.SaveChanges();
 
                     var getNotArchiveData = db.tbl_registration.Where(x => x.isArchived == 0).ToList();
-                    return Json(getNotArchiveData , JsonRequestBehavior.AllowGet);
-
-
-                    return Json(new { success = true, message = "Data archived successfully." }, JsonRequestBehavior.AllowGet);
+                    return Json(getNotArchiveData, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception ex)
             {
-                throw new ArgumentException($"An error occured : {ex.Message} : {ex.InnerException} : {ex.StackTrace} ");
+                throw new ArgumentException($"An error occured : {ex.Message} : {ex.InnerException} : {ex.StackTrace}");
             }
         }
-
-
-        // Add this method to your DefController.cs
 
         [HttpPost]
         public JsonResult UpdateUser(int registrationID, string firstName, string lastName)
@@ -215,5 +181,62 @@ namespace LifeProgApp.Controllers
         }
 
 
+        // ====================================================================
+        // FILE UPLOAD METHODS
+        // ====================================================================
+
+        [HttpPost]
+        public JsonResult Upload()
+        {
+            if (Request.Files.Count == 0)
+                return Json(new { Message = "No file received" });
+
+            HttpPostedFileBase file = Request.Files[0];
+
+            if (file != null && file.ContentLength > 0)
+            {
+                string uploadPath = Server.MapPath("~/Content/Uploads/");
+                if (!Directory.Exists(uploadPath))
+                    Directory.CreateDirectory(uploadPath);
+
+                string fileName = Guid.NewGuid() + Path.GetExtension(file.FileName);
+                string filePath = Path.Combine(uploadPath, fileName);
+                file.SaveAs(filePath);
+
+                using (var db = new Models.AppContext())
+                {
+                    var newImage = new tblImagesModel
+                    {
+                        imageName = fileName,
+                        imagePath = "~/Content/Uploads/" + fileName,
+                        createdAt = DateTime.Now,
+                        updateAt = DateTime.Now
+                    };
+
+                    db.tbl_images.Add(newImage);
+                    db.SaveChanges();
+                }
+
+                return Json(new { Message = "File uploaded succesfully!", FilePath = "/Content/Uploads/" + fileName });
+            }
+
+            return Json(new { Message = "Upload Failed." });
+        }
+
+        public JsonResult GetCarouselImagesFunc()
+        {
+            try
+            {
+                using (var db = new Models.AppContext())
+                {
+                    var images = db.tbl_images.Select(x => x).ToList();
+                    return Json(images, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException($"An error occured : {ex.Message} : {ex.InnerException} : {ex.StackTrace}");
+            }
+        }
     }
 }
