@@ -3,281 +3,256 @@
 }
 
 
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
 
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        background: #fff;
+        color: #000;
+    }
 
+    /* Hero */
+    .hero {
+        text-align: center;
+        margin: 40px 0 20px;
+    }
 
-
-
-
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Your Life Journey</title>
-
-    <style>
-        * {
-            box-sizing: border-box;
+        .hero h1 {
             margin: 0;
-            padding: 0;
+            font-size: 22px;
         }
 
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            background: #fff;
-            color: #000;
-        }
-
-        
-        /* Hero */
-        .hero {
-            text-align: center;
-            margin: 40px 0 20px;
-        }
-
-            .hero h1 {
-                margin: 0;
-                font-size: 22px;
-            }
-
-            .hero p {
-                color: #555;
-                margin: 8px 0 20px;
-                font-size: 14px;
-            }
-
-        /* Stats */
-        .stats {
-            display: flex;
-            justify-content: center;
-            gap: 50px;
-            margin-bottom: 40px;
-        }
-
-            .stats div {
-                text-align: center;
-            }
-
-            .stats .num {
-                font-weight: bold;
-                font-size: 18px;
-                display: block;
-            }
-
-            .stats .label {
-                color: #555;
-                font-size: 12px;
-            }
-
-        /* Sections */
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-        }
-
-        .section {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 20px;
-        }
-
-            .section h2 {
-                font-size: 16px;
-                margin: 0 0 15px;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            }
-
-            .section button {
-                background: #000;
-                color: #fff;
-                border: none;
-                padding: 6px 12px;
-                border-radius: 4px;
-                font-size: 12px;
-                cursor: pointer;
-            }
-
-        /* Quests */
-        .quest {
-            display: flex;
-            align-items: flex-start;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            margin-bottom: 10px;
-            font-size: 13px;
-        }
-
-            .quest input {
-                margin-right: 10px;
-            }
-
-            .quest .title {
-                font-weight: bold;
-            }
-
-            .quest .desc {
-                color: #555;
-                font-size: 12px;
-            }
-
-        /* Goals */
-        .goal {
-            border: 1px solid #ddd;
-            padding: 10px;
-            border-radius: 6px;
-            margin-bottom: 10px;
-            font-size: 13px;
-        }
-
-            .goal .top {
-                display: flex;
-                justify-content: space-between;
-                margin-bottom: 5px;
-                font-weight: bold;
-            }
-
-        .progress {
-            height: 6px;
-            background: #eee;
-            border-radius: 3px;
-            margin-bottom: 5px;
-            overflow: hidden;
-        }
-
-            .progress span {
-                display: block;
-                height: 100%;
-                background: #000;
-            }
-
-        .goal .desc {
-            font-size: 12px;
+        .hero p {
             color: #555;
+            margin: 8px 0 20px;
+            font-size: 14px;
         }
 
-        /* Weekly progress */
-        .weekly {
+    /* Stats */
+    .stats {
+        display: flex;
+        justify-content: center;
+        gap: 50px;
+        margin-bottom: 40px;
+    }
+
+        .stats div {
             text-align: center;
-            margin-top: 30px;
         }
 
-        .dots {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            margin-top: 10px;
+        .stats .num {
+            font-weight: bold;
+            font-size: 18px;
+            display: block;
         }
 
-        .dot {
-            width: 30px;
-            height: 30px;
-            border: 1px solid #000;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .stats .label {
+            color: #555;
             font-size: 12px;
         }
 
-            .dot.filled {
-                background: #000;
-                color: #fff;
-            }
+    /* Sections */
+    .container {
+        max-width: 900px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+    }
 
-        
-    </style>
-</head>
-<body>
+    .section {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 20px;
+    }
 
-   
+        .section h2 {
+            font-size: 16px;
+            margin: 0 0 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-    <!-- Hero -->
-    <div class="hero">
-        <h1>Your Life Journey</h1>
-        <p>Transform your daily habits into meaningful progress with personalized quests and long-term goals</p>
-        <div class="stats">
-            <div><span class="num">47</span><span class="label">Quests Completed</span></div>
-            <div><span class="num">12</span><span class="label">Goals Achieved</span></div>
-            <div><span class="num">Level 8</span><span class="label">Current Level</span></div>
+        .section button {
+            background: #000;
+            color: #fff;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+    /* Quests */
+    .quest {
+        display: flex;
+        align-items: flex-start;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        margin-bottom: 10px;
+        font-size: 13px;
+    }
+
+        .quest input {
+            margin-right: 10px;
+        }
+
+        .quest .title {
+            font-weight: bold;
+        }
+
+        .quest .desc {
+            color: #555;
+            font-size: 12px;
+        }
+
+    /* Goals */
+    .goal {
+        border: 1px solid #ddd;
+        padding: 10px;
+        border-radius: 6px;
+        margin-bottom: 10px;
+        font-size: 13px;
+    }
+
+        .goal .top {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+    .progress {
+        height: 6px;
+        background: #eee;
+        border-radius: 3px;
+        margin-bottom: 5px;
+        overflow: hidden;
+    }
+
+        .progress span {
+            display: block;
+            height: 100%;
+            background: #000;
+        }
+
+    .goal .desc {
+        font-size: 12px;
+        color: #555;
+    }
+
+    /* Weekly progress */
+    .weekly {
+        text-align: center;
+        margin-top: 30px;
+    }
+
+    .dots {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        margin-top: 10px;
+    }
+
+    .dot {
+        width: 30px;
+        height: 30px;
+        border: 1px solid #000;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+    }
+
+        .dot.filled {
+            background: #000;
+            color: #fff;
+        }
+</style>
+
+<!-- Hero -->
+<div class="hero">
+    <h1>Your Life Journey</h1>
+    <p>Transform your daily habits into meaningful progress with personalized quests and long-term goals</p>
+    <div class="stats">
+        <div><span class="num">47</span><span class="label">Quests Completed</span></div>
+        <div><span class="num">12</span><span class="label">Goals Achieved</span></div>
+        <div><span class="num">Level 8</span><span class="label">Current Level</span></div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="container">
+    <!-- Today's Quests -->
+    <div class="section">
+        <h2>Today's Quests <button>+ Add Quest</button></h2>
+        <div class="quest">
+            <input type="checkbox" />
+            <div>
+                <div class="title">Morning Meditation</div>
+                <div class="desc">Practice mindfulness for 10 minutes</div>
+            </div>
+        </div>
+        <div class="quest">
+            <input type="checkbox" />
+            <div>
+                <div class="title">Read 10 Pages</div>
+                <div class="desc">Continue current book</div>
+            </div>
+        </div>
+        <div class="quest">
+            <input type="checkbox" />
+            <div>
+                <div class="title">30-Minute Walk</div>
+                <div class="desc">Get outside for short exercise</div>
+            </div>
+        </div>
+
+        <div class="weekly">
+            <h3>Weekly Progress</h3>
+            <p>11 quests completed this week</p>
+            <div class="dots">
+                <div class="dot filled">M</div>
+                <div class="dot filled">T</div>
+                <div class="dot filled">W</div>
+                <div class="dot">T</div>
+                <div class="dot">F</div>
+                <div class="dot">S</div>
+                <div class="dot">S</div>
+            </div>
         </div>
     </div>
 
-    <!-- Main Content -->
-    <div class="container">
-        <!-- Today's Quests -->
-        <div class="section">
-            <h2>Today's Quests <button>+ Add Quest</button></h2>
-            <div class="quest">
-                <input type="checkbox" />
-                <div>
-                    <div class="title">Morning Meditation</div>
-                    <div class="desc">Practice mindfulness for 10 minutes</div>
-                </div>
-            </div>
-            <div class="quest">
-                <input type="checkbox" />
-                <div>
-                    <div class="title">Read 10 Pages</div>
-                    <div class="desc">Continue current book</div>
-                </div>
-            </div>
-            <div class="quest">
-                <input type="checkbox" />
-                <div>
-                    <div class="title">30-Minute Walk</div>
-                    <div class="desc">Get outside for short exercise</div>
-                </div>
-            </div>
-
-            <div class="weekly">
-                <h3>Weekly Progress</h3>
-                <p>11 quests completed this week</p>
-                <div class="dots">
-                    <div class="dot filled">M</div>
-                    <div class="dot filled">T</div>
-                    <div class="dot filled">W</div>
-                    <div class="dot">T</div>
-                    <div class="dot">F</div>
-                    <div class="dot">S</div>
-                    <div class="dot">S</div>
-                </div>
-            </div>
+    <!-- Long-term Goals -->
+    <div class="section">
+        <h2>Long-term Goals <button>+ New Goal</button></h2>
+        <div class="goal">
+            <div class="top"><span>Learn Spanish</span><span>65%</span></div>
+            <div class="progress"><span style="width:65%"></span></div>
+            <div class="desc">Achieve conversational fluency — Target: Dec 2025</div>
         </div>
-
-        <!-- Long-term Goals -->
-        <div class="section">
-            <h2>Long-term Goals <button>+ New Goal</button></h2>
-            <div class="goal">
-                <div class="top"><span>Learn Spanish</span><span>65%</span></div>
-                <div class="progress"><span style="width:65%"></span></div>
-                <div class="desc">Achieve conversational fluency — Target: Dec 2025</div>
-            </div>
-            <div class="goal">
-                <div class="top"><span>Run Marathon</span><span>34%</span></div>
-                <div class="progress"><span style="width:34%"></span></div>
-                <div class="desc">Complete 26.2 miles — Target: Oct 2025</div>
-            </div>
-            <div class="goal">
-                <div class="top"><span>Save $10,000</span><span>82%</span></div>
-                <div class="progress"><span style="width:82%"></span></div>
-                <div class="desc">Emergency fund goal — Target: Jun 2025</div>
-            </div>
-            <div class="goal">
-                <div class="top"><span>Launch Side Project</span><span>42%</span></div>
-                <div class="progress"><span style="width:42%"></span></div>
-                <div class="desc">Release app with user adoption — Target: Nov 2025</div>
-            </div>
+        <div class="goal">
+            <div class="top"><span>Run Marathon</span><span>34%</span></div>
+            <div class="progress"><span style="width:34%"></span></div>
+            <div class="desc">Complete 26.2 miles — Target: Oct 2025</div>
+        </div>
+        <div class="goal">
+            <div class="top"><span>Save $10,000</span><span>82%</span></div>
+            <div class="progress"><span style="width:82%"></span></div>
+            <div class="desc">Emergency fund goal — Target: Jun 2025</div>
+        </div>
+        <div class="goal">
+            <div class="top"><span>Launch Side Project</span><span>42%</span></div>
+            <div class="progress"><span style="width:42%"></span></div>
+            <div class="desc">Release app with user adoption — Target: Nov 2025</div>
         </div>
     </div>
-
-    
-
-</body>
-</html>
+</div>

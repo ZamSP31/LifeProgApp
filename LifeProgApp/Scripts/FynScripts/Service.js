@@ -1,56 +1,150 @@
-﻿// Dashboard Data Service
-this.getDashboardData = function (userId) {
-    userId = userId || 1;
-    return $http({
-        method: "get",
-        url: "/Def/GetDashboardData",
-        params: { userId: userId }
-    });
-};
+﻿// ============================================================================
+// LifeProgApp Service
+// ============================================================================
+app.service("LifeProgAppService", function ($http) {
 
-// Get User Goals Service
-this.getUserGoals = function (userId) {
-    userId = userId || 1;
-    return $http({
-        method: "get",
-        url: "/Def/GetUserGoals",
-        params: { userId: userId }
-    });
-};
+    // ========================================================================
+    // ACCOUNT & REGISTRATION SERVICES
+    // ========================================================================
 
-// Get Today's Quests Service
-this.getTodaysQuests = function (userId) {
-    userId = userId || 1;
-    return $http({
-        method: "get",
-        url: "/Def/GetTodaysQuests",
-        params: { userId: userId }
-    });
-};
+    this.saveAccount = function (userData) {
+        return $http({
+            method: "post",
+            url: "/Def/Create",
+            data: userData
+        });
+    };
 
-// Complete Quest Service
-this.completeQuest = function (questId, userId) {
-    userId = userId || 1;
-    return $http({
-        method: "post",
-        url: "/Def/CompleteQuest",
-        data: { questId: questId, userId: userId }
-    });
-};
+    this.jsonService = function (userData) {
+        var response = $http({
+            method: "post",
+            url: "/Def/UpdateData",
+            data: userData
+        });
+        return response;
+    };
 
-// Update Goal Progress Service
-this.updateGoalProgress = function (goalId, newValue) {
-    return $http({
-        method: "post",
-        url: "/Def/UpdateGoalProgress",
-        data: { goalId: goalId, newValue: newValue }
-    });
-};
+    // ========================================================================
+    // DATA RETRIEVAL SERVICES
+    // ========================================================================
 
-// Get Goal Categories Service
-this.getGoalCategories = function () {
-    return $http({
-        method: "get",
-        url: "/Def/GetGoalCategories"
-    });
-};
+    this.getDataService = function () {
+        return $http("/Def/GetData");
+    };
+
+    // ========================================================================
+    // ARCHIVE SERVICES
+    // ========================================================================
+
+    this.archiveDataService = function (regID) {
+        var response = $http({
+            method: "post",
+            url: "/Def/ArchiveData",
+            data: { registrationID: regID }
+        });
+        return response;
+    };
+
+    // ========================================================================
+    // UPDATE SERVICES
+    // ========================================================================
+
+    this.updateUserService = function (userData) {
+        var response = $http({
+            method: "post",
+            url: "/Def/UpdateUser",
+            data: userData
+        });
+        return response;
+    };
+
+    // ========================================================================
+    // FILE UPLOAD SERVICES
+    // ========================================================================
+
+    this.uploadFile = function (file) {
+        var fd = new FormData();
+        fd.append('file', file);
+
+        return $http({
+            method: "post",
+            url: "/Def/Upload",
+            data: fd,
+            headers: { 'Content-Type': undefined },
+            transformRequest: angular.identity
+        });
+    };
+
+    // ========================================================================
+    // CAROUSEL/GALLERY SERVICES
+    // ========================================================================
+
+    this.getCarouselImagesService = function () {
+        return $http({
+            method: "get",
+            url: "/Def/GetCarouselImagesFunc"
+        });
+    };
+
+    // ========================================================================
+    // DASHBOARD SERVICES (One % Database Integration)
+    // ========================================================================
+
+    // Dashboard Data Service
+    this.getDashboardData = function (userId) {
+        userId = userId || 1;
+        return $http({
+            method: "get",
+            url: "/Def/GetDashboardData",
+            params: { userId: userId }
+        });
+    };
+
+    // Get User Goals Service
+    this.getUserGoals = function (userId) {
+        userId = userId || 1;
+        return $http({
+            method: "get",
+            url: "/Def/GetUserGoals",
+            params: { userId: userId }
+        });
+    };
+
+    // Get Today's Quests Service
+    this.getTodaysQuests = function (userId) {
+        userId = userId || 1;
+        return $http({
+            method: "get",
+            url: "/Def/GetTodaysQuests",
+            params: { userId: userId }
+        });
+    };
+
+    // Complete Quest Service
+    this.completeQuest = function (questId, userId) {
+        userId = userId || 1;
+        return $http({
+            method: "post",
+            url: "/Def/CompleteQuest",
+            data: { questId: questId, userId: userId }
+        });
+    };
+
+    // Update Goal Progress Service
+    this.updateGoalProgress = function (goalId, newValue) {
+        return $http({
+            method: "post",
+            url: "/Def/UpdateGoalProgress",
+            data: { goalId: goalId, newValue: newValue }
+        });
+    };
+
+    // Get Goal Categories Service
+    this.getGoalCategories = function () {
+        return $http({
+            method: "get",
+            url: "/Def/GetGoalCategories"
+        });
+    };
+
+});

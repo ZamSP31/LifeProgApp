@@ -13,21 +13,20 @@ app.controller("LifeProgAppController", ['$scope', '$window', '$timeout', 'LifeP
 
     // ========================================================================
     // NAVIGATION FUNCTIONS
-    // ========================================================================
-    $scope.redirectToLogin = function () {
-        window.location.href = "/Def/LoginPage";
+        $scope.redirectToLogin = function () {
+        $window.location.href = "/Def/LoginPage";
     };
 
     $scope.redirectToRegistration = function () {
-        window.location.href = '/Def/RegistrationPage';
+        $window.location.href = '/Def/RegistrationPage';
     };
 
     $scope.redirectToDashboard = function () {
-        window.location.href = '/Def/DashboardPage';
+        $window.location.href = '/Def/DashboardPage';
     };
 
     $scope.redirectToGoals = function () {
-        window.location.href = "/Def/GoalsPage";
+        $window.location.href = "/Def/GoalsPage";
     };
 
     $scope.redirectToProgress = function () {
@@ -35,11 +34,11 @@ app.controller("LifeProgAppController", ['$scope', '$window', '$timeout', 'LifeP
     };
 
     $scope.redirectToOverview = function () {
-        window.location.href = '/Def/OverviewPage';
+        $window.location.href = '/Def/OverviewPage';
     };
 
     $scope.redirectToGallery = function () {
-        window.location.href = '/Def/GalleryPage';
+        $window.location.href = '/Def/GalleryPage';
     };
 
 
@@ -356,8 +355,7 @@ app.controller("LifeProgAppController", ['$scope', '$window', '$timeout', 'LifeP
     // ========================================================================
 
     // Initialize data on page load
-    $scope.getDataFunc();
-
+   
 
     // ========================================================================
     // COMMENTED OUT CODE (Old Implementations)
