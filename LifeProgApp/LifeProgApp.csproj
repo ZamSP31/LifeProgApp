@@ -190,11 +190,16 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Context\AppContext.cs" />
+    <Compile Include="Models\DailyQuestModel.cs" />
+    <Compile Include="Models\GoalCategoryModel.cs" />
+    <Compile Include="Models\GoalModel.cs" />
     <Compile Include="Models\Map\tblImagesMap.cs" />
     <Compile Include="Models\Map\tblRegistrationMap.cs" />
     <Compile Include="Models\tblImagesModel.cs" />
     <Compile Include="Models\tblRegistrationModel.cs" />
     <Compile Include="Models\UserInformation.cs" />
+    <Compile Include="Models\UserModel.cs" />
+    <Compile Include="Models\UserStatsModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
