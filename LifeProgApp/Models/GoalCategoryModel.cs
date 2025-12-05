@@ -1,29 +1,26 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
 
 namespace LifeProgApp.Models
 {
-    [Table("goal_categories")]
     public class GoalCategoryModel
     {
-        [Key]
-        [Column("category_id")]
-        public int CategoryId { get; set; }
-
-        [Required]
-        [StringLength(50)]
-        [Column("category_name")]
-        public string CategoryName { get; set; }
-
-        [Column("description")]
-        public string Description { get; set; }
-
-        [StringLength(50)]
-        [Column("icon_name")]
-        public string IconName { get; set; }
-
-        [Column("created_at")]
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public int goalId { get; set; }
+        public int userId { get; set; }
+        public int categoryId { get; set; }
+        public string title { get; set; }
+        public string description { get; set; }
+        public decimal currentValue { get; set; }
+        public decimal targetValue { get; set; }
+        public string unit { get; set; }
+        public DateTime startDate { get; set; }
+        public DateTime targetDate { get; set; }
+        public DateTime completedAt { get; set; }
+        public string status { get; set; }
+        public int priority { get; set; }
+        public DateTime createdAt { get; set; }
+        public DateTime updatedAt { get; set; }
     }
 }
