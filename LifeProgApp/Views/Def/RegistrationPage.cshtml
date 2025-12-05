@@ -60,7 +60,7 @@
     }
 </style>
 
-<div ng-controller="RegistrationController">
+<div ng-controller="LifeProgAppController">
 
     <div class="container">
         <form name="regForm" class="form-section" ng-submit="saveRegistration()" novalidate>
@@ -152,10 +152,21 @@
                        id="email"
                        ng-model="email"
                        required
-                       ng-class="{'valid': regForm.email.$touched && regForm.email.$valid,
-                              'invalid': regForm.email.$touched && regForm.email.$invalid}">
+                       ng-class="{
+               'valid': regForm.email.$touched && regForm.email.$valid,
+               'invalid': regForm.email.$touched && regForm.email.$invalid
+           }">
                 <label for="email">Email</label>
-                <span class="helper-text required" ng-show="regForm.email.$touched && regForm.email.$error.required">Required</span>
+
+                <span class="helper-text required"
+                      ng-show="regForm.email.$touched && regForm.email.$error.required">
+                    Required
+                </span>
+
+                <span class="helper-text"
+                      ng-show="regForm.email.$touched && regForm.email.$error.email">
+                    Please enter a valid email address
+                </span>
 
                 <span class="helper-text instruction">Enter a valid email address</span>
             </div>

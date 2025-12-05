@@ -456,11 +456,11 @@ namespace LifeProgApp.Controllers
                         goal.completed_at = DateTime.Now;
 
                         // Update user stats
-                        var stats = db.UserStats.FirstOrDefault(s => s.user_id == goal.i);
+                        var stats = db.UserStats.FirstOrDefault(s => s.user_id == goal.user_id);
                         if (stats != null)
                         {
-                            stats.TotalGoalsAchieved++;
-                            stats.UpdatedAt = DateTime.Now;
+                            stats.total_goals_achieved++;
+                            stats.updated_at = DateTime.Now;
                         }
                     }
 
@@ -499,7 +499,7 @@ namespace LifeProgApp.Controllers
                             categoryId = c.category_id,
                             categoryName = c.category_id,
                             description = c.description,
-                            iconName = c.icon_name
+                            iconName = c.icon_name,
                         })
                         .ToList();
 
