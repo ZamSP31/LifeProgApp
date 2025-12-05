@@ -261,30 +261,30 @@ namespace LifeProgApp.Controllers
                 using (var db = new Models.AppContext())
                 {
                     // Get user info
-                    var user = db.Users.FirstOrDefault(u => u.UserId == userId);
+                    var user = db.Users.FirstOrDefault(u => u.user_id == userId);
                     if (user == null)
                     {
                         return Json(new { success = false, message = "User not found" }, JsonRequestBehavior.AllowGet);
                     }
 
                     // Get user stats
-                    var stats = db.UserStats.FirstOrDefault(s => s.UserId == userId);
+                    var stats = db.UserStats.FirstOrDefault(s => s.user_id == userId);
 
                     // Get active goals count
-                    var activeGoalsCount = db.Goals.Count(g => g.UserId == userId && g.Status == "active");
+                    var activeGoalsCount = db.Goals.Count(g => g.goal_id == userId && g.status == "active");
 
                     var dashboardData = new
                     {
-                        userId = user.UserId,
-                        firstName = user.FirstName,
-                        lastName = user.LastName,
-                        email = user.Email,
-                        currentLevel = user.CurrentLevel,
-                        totalXP = user.TotalXP,
-                        totalQuestsCompleted = stats?.TotalQuestsCompleted ?? 0,
-                        totalGoalsAchieved = stats?.TotalGoalsAchieved ?? 0,
-                        currentStreak = stats?.CurrentStreak ?? 0,
-                        weeklyQuestCount = stats?.WeeklyQuestCount ?? 0,
+                        userId = user.user_id,
+                        firstName = user.first_name,
+                        lastName = user.last_name,
+                        email = user.email,
+                        currentLevel = user.current_level,
+                        totalXP = user.total_xp,
+                        totalQuestsCompleted = stats?.total_quests_completed ?? 0,
+                        totalGoalsAchieved = stats?.total_goals_achieved ?? 0,
+                        currentStreak = stats?.current_streak ?? 0,
+                        weeklyQuestCount = stats?.weekly_quest_count ?? 0,
                         activeGoalsCount = activeGoalsCount
                     };
 
@@ -308,18 +308,18 @@ namespace LifeProgApp.Controllers
                 using (var db = new Models.AppContext())
                 {
                     var goals = db.Goals
-                        .Where(g => g.UserId == userId && g.Status == "active")
+                        .Where(g => g.user_id == userId && g.status == "active")
                         .Select(g => new
                         {
-                            goalId = g.GoalId,
-                            title = g.Title,
-                            description = g.Description,
-                            currentValue = g.CurrentValue,
-                            targetValue = g.TargetValue,
-                            unit = g.Unit,
-                            targetDate = g.TargetDate,
-                            progressPercentage = (int)((g.CurrentValue / g.TargetValue) * 100),
-                            daysRemaining = System.Data.Entity.DbFunctions.DiffDays(DateTime.Now, g.TargetDate)
+                            goalId = g.goal_id,
+                            title = g.title,
+                            description = g.description,
+                            currentValue = g.current_value,
+                            targetValue = g.target_value,
+                            unit = g.unit,
+                            targetDate = g.target_date,
+                            progressPercentage = (int)((g.current_value / g.target_value) * 100),
+                            daysRemaining = System.Data.Entity.DbFunctions.DiffDays(DateTime.Now, g.target_date)
                         })
                         .OrderBy(g => g.targetDate)
                         .ToList();
@@ -345,15 +345,15 @@ namespace LifeProgApp.Controllers
                 {
                     var today = DateTime.Today;
                     var quests = db.DailyQuests
-                        .Where(q => q.UserId == userId && DbFunctions.TruncateTime(q.QuestDate) == today)
+                        .Where(q => q.user_id == userId && DbFunctions.TruncateTime(q.quest_date) == today)
                         .Select(q => new
                         {
-                            questId = q.QuestId,
-                            title = q.Title,
-                            description = q.Description,
-                            difficulty = q.Difficulty,
-                            xpReward = q.XPReward,
-                            isCompleted = q.IsCompleted
+                            questId = q.quest_id,
+                            title = q.title,
+                            description = q.description,
+                            difficulty = q.difficulty,
+                            xpReward = q.xp_reward,
+                            isCompleted = q.is_completed
                         })
                         .OrderBy(q => q.isCompleted)
                         .ThenByDescending(q => q.xpReward)
@@ -378,38 +378,38 @@ namespace LifeProgApp.Controllers
             {
                 using (var db = new Models.AppContext())
                 {
-                    var quest = db.DailyQuests.FirstOrDefault(q => q.QuestId == questId && q.UserId == userId);
+                    var quest = db.DailyQuests.FirstOrDefault(q => q.quest_id == questId && q.user_id == userId);
 
                     if (quest == null)
                     {
                         return Json(new { success = false, message = "Quest not found" });
                     }
 
-                    if (quest.IsCompleted)
+                    if (quest.is_completed)
                     {
                         return Json(new { success = false, message = "Quest already completed" });
                     }
 
                     // Mark quest as completed
-                    quest.IsCompleted = true;
-                    quest.UpdatedAt = DateTime.Now;
+                    quest.is_completed = true;
+                    quest.updated_at = DateTime.Now;
 
                     // Award XP to user
-                    var user = db.Users.FirstOrDefault(u => u.UserId == userId);
+                    var user = db.Users.FirstOrDefault(u => u.user_id == userId);
                     if (user != null)
                     {
-                        user.TotalXP += quest.XPReward;
-                        user.UpdatedAt = DateTime.Now;
+                        user.total_xp += quest.xp_reward;
+                        user.updated_at = DateTime.Now;
                     }
 
                     // Update user stats
-                    var stats = db.UserStats.FirstOrDefault(s => s.UserId == userId);
+                    var stats = db.UserStats.FirstOrDefault(s => s.user_id == userId);
                     if (stats != null)
                     {
-                        stats.TotalQuestsCompleted++;
-                        stats.WeeklyQuestCount++;
-                        stats.LastQuestDate = DateTime.Now;
-                        stats.UpdatedAt = DateTime.Now;
+                        stats.total_quests_completed++;
+                        stats.weekly_quest_count++;
+                        stats.last_quest_date = DateTime.Now;
+                        stats.updated_at = DateTime.Now;
                     }
 
                     db.SaveChanges();
@@ -418,8 +418,8 @@ namespace LifeProgApp.Controllers
                     {
                         success = true,
                         message = "Quest completed!",
-                        xpEarned = quest.XPReward,
-                        newTotalXP = user?.TotalXP ?? 0
+                        xpEarned = quest.xp_reward,
+                        newTotalXP = user?.total_xp ?? 0
                     });
                 }
             }
@@ -439,24 +439,24 @@ namespace LifeProgApp.Controllers
             {
                 using (var db = new Models.AppContext())
                 {
-                    var goal = db.Goals.FirstOrDefault(g => g.GoalId == goalId);
+                    var goal = db.Goals.FirstOrDefault(g => g.goal_id == goalId);
 
                     if (goal == null)
                     {
                         return Json(new { success = false, message = "Goal not found" });
                     }
 
-                    goal.CurrentValue = newValue;
-                    goal.UpdatedAt = DateTime.Now;
+                    goal.current_value = newValue;
+                    goal.updated_at = DateTime.Now;
 
                     // Check if goal is completed
-                    if (newValue >= goal.TargetValue && goal.Status != "completed")
+                    if (newValue >= goal.target_value && goal.status != "completed")
                     {
-                        goal.Status = "completed";
-                        goal.CompletedAt = DateTime.Now;
+                        goal.status = "completed";
+                        goal.completed_at = DateTime.Now;
 
                         // Update user stats
-                        var stats = db.UserStats.FirstOrDefault(s => s.UserId == goal.UserId);
+                        var stats = db.UserStats.FirstOrDefault(s => s.user_id == goal.i);
                         if (stats != null)
                         {
                             stats.TotalGoalsAchieved++;
@@ -466,14 +466,14 @@ namespace LifeProgApp.Controllers
 
                     db.SaveChanges();
 
-                    var progressPercentage = (int)((newValue / goal.TargetValue) * 100);
+                    var progressPercentage = (int)((newValue / goal.target_value) * 100);
 
                     return Json(new
                     {
                         success = true,
                         message = "Goal progress updated!",
                         progressPercentage = progressPercentage,
-                        isCompleted = goal.Status == "completed"
+                        isCompleted = goal.status == "completed"
                     });
                 }
             }
@@ -496,10 +496,10 @@ namespace LifeProgApp.Controllers
                     var categories = db.GoalCategories
                         .Select(c => new
                         {
-                            categoryId = c.CategoryId,
-                            categoryName = c.CategoryName,
-                            description = c.Description,
-                            iconName = c.IconName
+                            categoryId = c.category_id,
+                            categoryName = c.category_id,
+                            description = c.description,
+                            iconName = c.icon_name
                         })
                         .ToList();
 

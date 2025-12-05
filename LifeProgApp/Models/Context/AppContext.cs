@@ -14,10 +14,10 @@ namespace LifeProgApp.Models
 
         public DbSet<tblRegistrationModel> tbl_registration { get; set; }
         public DbSet<tblImagesModel> tbl_images { get; set; }
-        public DbSet<UserModel> users { get; set; }
-        public DbSet<UserStatsModel> user_stats { get; set; }
-        public DbSet<GoalModel> goals { get; set; }
-        public DbSet<GoalCategoryModel> goal_categories { get; set; }
-        public DbSet<DailyQuestModel> daily_quests { get; set; }
+        public DbSet<UserModel> Users { get; set; }
+        public DbSet<UserStatsModel> UserStats { get; set; }
+        public DbSet<GoalModel> Goals { get; set; }
+        public DbSet<GoalCategoryModel> GoalCategories { get; set; }
+        public DbSet<DailyQuestModel> DailyQuests { get; set; }
     }
 }
