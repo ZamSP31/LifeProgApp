@@ -115,31 +115,42 @@ namespace LifeProgApp.Controllers
             }
         }
 
-        public void UpdateData()
+        // REPLACE your old UpdateUser method with this one
+        [HttpPost]
+        public JsonResult UpdateUser(tblRegistrationModel user) // <--- FIX: Accept the full model
         {
             try
             {
                 using (var db = new Models.AppContext())
                 {
-                    var getData = db.tbl_registration.Where(x => x.registrationID == 1).FirstOrDefault();
+                    // Find the user using the ID from the incoming object
+                    var existingUser = db.tbl_registration
+                                         .Where(x => x.registrationID == user.registrationID)
+                                         .FirstOrDefault();
 
-                    if (getData != null)
+                    if (existingUser != null)
                     {
-                        getData.firstName = "UpdatedName";
-                        getData.lastName = "UpdatedLastName";
-                        getData.createdAt = DateTime.Now;
-                        getData.updatedAt = DateTime.Now;
+                        // Update properties
+                        existingUser.firstName = user.firstName;
+                        existingUser.lastName = user.lastName;
+                        existingUser.updatedAt = DateTime.Now;
 
                         db.SaveChanges();
+
+                        return Json(new { success = true, message = "User updated successfully" }, JsonRequestBehavior.AllowGet);
+                    }
+                    else
+                    {
+                        return Json(new { success = false, message = "User not found" }, JsonRequestBehavior.AllowGet);
                     }
                 }
             }
             catch (Exception ex)
             {
-                throw new ArgumentException($"An error occured : {ex.Message}");
+                // Return a clear error message if something breaks
+                return Json(new { success = false, message = $"An error occurred: {ex.Message}" }, JsonRequestBehavior.AllowGet);
             }
         }
-
 
         // ====================================================================
         // JSON RESULT METHODS
