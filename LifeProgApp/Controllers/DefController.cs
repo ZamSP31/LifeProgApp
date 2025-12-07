@@ -9,7 +9,7 @@ using System.Web.Mvc;
 using System.Web.Services.Description;
 
 namespace LifeProgApp.Controllers
-{
+{   // <--- FIXED: Added the missing bracket here!
     public class DefController : Controller
     {
         // ====================================================================
@@ -115,43 +115,6 @@ namespace LifeProgApp.Controllers
             }
         }
 
-        // REPLACE your old UpdateUser method with this one
-        [HttpPost]
-        public JsonResult UpdateUser(tblRegistrationModel user) // <--- FIX: Accept the full model
-        {
-            try
-            {
-                using (var db = new Models.AppContext())
-                {
-                    // Find the user using the ID from the incoming object
-                    var existingUser = db.tbl_registration
-                                         .Where(x => x.registrationID == user.registrationID)
-                                         .FirstOrDefault();
-
-                    if (existingUser != null)
-                    {
-                        // Update properties
-                        existingUser.firstName = user.firstName;
-                        existingUser.lastName = user.lastName;
-                        existingUser.updatedAt = DateTime.Now;
-
-                        db.SaveChanges();
-
-                        return Json(new { success = true, message = "User updated successfully" }, JsonRequestBehavior.AllowGet);
-                    }
-                    else
-                    {
-                        return Json(new { success = false, message = "User not found" }, JsonRequestBehavior.AllowGet);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                // Return a clear error message if something breaks
-                return Json(new { success = false, message = $"An error occurred: {ex.Message}" }, JsonRequestBehavior.AllowGet);
-            }
-        }
-
         // ====================================================================
         // JSON RESULT METHODS
         // ====================================================================
@@ -172,57 +135,63 @@ namespace LifeProgApp.Controllers
             }
         }
 
-        public JsonResult ArchiveData(int registrationID)
+        // UPDATED: Fixed ArchiveData to accept the Model (Prevents 500 Error on Delete)
+        public JsonResult ArchiveData(tblRegistrationModel user)
         {
             try
             {
                 using (var db = new Models.AppContext())
                 {
-                    var getData = db.tbl_registration.Where(x => x.registrationID == registrationID).FirstOrDefault();
-                    getData.isArchived = 1;
-                    db.SaveChanges();
-
-                    var getNotArchiveData = db.tbl_registration.Where(x => x.isArchived == 0).ToList();
-                    return Json(getNotArchiveData, JsonRequestBehavior.AllowGet);
+                    var getData = db.tbl_registration.Where(x => x.registrationID == user.registrationID).FirstOrDefault();
+                    if (getData != null)
+                    {
+                        getData.isArchived = 1;
+                        db.SaveChanges();
+                        var getNotArchiveData = db.tbl_registration.Where(x => x.isArchived == 0).ToList();
+                        return Json(new { success = true, data = getNotArchiveData }, JsonRequestBehavior.AllowGet);
+                    }
+                    return Json(new { success = false, message = "User not found" }, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception ex)
             {
-                throw new ArgumentException($"An error occured : {ex.Message} : {ex.InnerException} : {ex.StackTrace}");
+                return Json(new { success = false, message = $"Error: {ex.Message}" }, JsonRequestBehavior.AllowGet);
             }
         }
 
+        // ====================================================================
+        // UPDATE USER
+        // ====================================================================
+
         [HttpPost]
-        public JsonResult UpdateUser(int registrationID, string firstName, string lastName)
+        public JsonResult UpdateUser(tblRegistrationModel user) // Correctly accepts the model
         {
             try
             {
                 using (var db = new Models.AppContext())
                 {
-                    var user = db.tbl_registration.Where(x => x.registrationID == registrationID).FirstOrDefault();
+                    var existingUser = db.tbl_registration
+                                         .Where(x => x.registrationID == user.registrationID)
+                                         .FirstOrDefault();
 
-                    if (user != null)
+                    if (existingUser != null)
                     {
-                        user.firstName = firstName;
-                        user.lastName = lastName;
-                        user.updatedAt = DateTime.Now;
+                        existingUser.firstName = user.firstName;
+                        existingUser.lastName = user.lastName;
+                        existingUser.updatedAt = DateTime.Now;
 
                         db.SaveChanges();
 
                         return Json(new { success = true, message = "User updated successfully" }, JsonRequestBehavior.AllowGet);
                     }
-                    else
-                    {
-                        return Json(new { success = false, message = "User not found" }, JsonRequestBehavior.AllowGet);
-                    }
+                    return Json(new { success = false, message = "User not found" }, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = $"An error occurred: {ex.Message}" }, JsonRequestBehavior.AllowGet);
+                return Json(new { success = false, message = $"Server Error: {ex.Message}" }, JsonRequestBehavior.AllowGet);
             }
         }
-
 
         // ====================================================================
         // FILE UPLOAD METHODS
@@ -282,37 +251,24 @@ namespace LifeProgApp.Controllers
             }
         }
 
-
-
-        //New methods can be added here
-        // ADD THESE METHODS TO YOUR DefController.cs FILE
-        // Place them after your existing methods
-
         // ==========================================
         // DASHBOARD DATA METHODS
         // ==========================================
 
-        /// <summary>
-        /// Get dashboard data for logged-in user
-        /// </summary>
         [HttpGet]
-        public JsonResult GetDashboardData(int userId = 1) // Default to demo user
+        public JsonResult GetDashboardData(int userId = 1)
         {
             try
             {
                 using (var db = new Models.AppContext())
                 {
-                    // Get user info
                     var user = db.Users.FirstOrDefault(u => u.user_id == userId);
                     if (user == null)
                     {
                         return Json(new { success = false, message = "User not found" }, JsonRequestBehavior.AllowGet);
                     }
 
-                    // Get user stats
                     var stats = db.UserStats.FirstOrDefault(s => s.user_id == userId);
-
-                    // Get active goals count
                     var activeGoalsCount = db.Goals.Count(g => g.goal_id == userId && g.status == "active");
 
                     var dashboardData = new
@@ -339,9 +295,6 @@ namespace LifeProgApp.Controllers
             }
         }
 
-        /// <summary>
-        /// Get all active goals for a user
-        /// </summary>
         [HttpGet]
         public JsonResult GetUserGoals(int userId = 1)
         {
@@ -375,9 +328,6 @@ namespace LifeProgApp.Controllers
             }
         }
 
-        /// <summary>
-        /// Get today's quests for a user
-        /// </summary>
         [HttpGet]
         public JsonResult GetTodaysQuests(int userId = 1)
         {
@@ -410,9 +360,6 @@ namespace LifeProgApp.Controllers
             }
         }
 
-        /// <summary>
-        /// Complete a quest
-        /// </summary>
         [HttpPost]
         public JsonResult CompleteQuest(int questId, int userId = 1)
         {
@@ -423,20 +370,14 @@ namespace LifeProgApp.Controllers
                     var quest = db.DailyQuests.FirstOrDefault(q => q.quest_id == questId && q.user_id == userId);
 
                     if (quest == null)
-                    {
                         return Json(new { success = false, message = "Quest not found" });
-                    }
 
                     if (quest.is_completed)
-                    {
                         return Json(new { success = false, message = "Quest already completed" });
-                    }
 
-                    // Mark quest as completed
                     quest.is_completed = true;
                     quest.updated_at = DateTime.Now;
 
-                    // Award XP to user
                     var user = db.Users.FirstOrDefault(u => u.user_id == userId);
                     if (user != null)
                     {
@@ -444,7 +385,6 @@ namespace LifeProgApp.Controllers
                         user.updated_at = DateTime.Now;
                     }
 
-                    // Update user stats
                     var stats = db.UserStats.FirstOrDefault(s => s.user_id == userId);
                     if (stats != null)
                     {
@@ -471,9 +411,6 @@ namespace LifeProgApp.Controllers
             }
         }
 
-        /// <summary>
-        /// Update goal progress
-        /// </summary>
         [HttpPost]
         public JsonResult UpdateGoalProgress(int goalId, decimal newValue)
         {
@@ -484,20 +421,16 @@ namespace LifeProgApp.Controllers
                     var goal = db.Goals.FirstOrDefault(g => g.goal_id == goalId);
 
                     if (goal == null)
-                    {
                         return Json(new { success = false, message = "Goal not found" });
-                    }
 
                     goal.current_value = newValue;
                     goal.updated_at = DateTime.Now;
 
-                    // Check if goal is completed
                     if (newValue >= goal.target_value && goal.status != "completed")
                     {
                         goal.status = "completed";
                         goal.completed_at = DateTime.Now;
 
-                        // Update user stats
                         var stats = db.UserStats.FirstOrDefault(s => s.user_id == goal.user_id);
                         if (stats != null)
                         {
@@ -525,9 +458,6 @@ namespace LifeProgApp.Controllers
             }
         }
 
-        /// <summary>
-        /// Get goal categories
-        /// </summary>
         [HttpGet]
         public JsonResult GetGoalCategories()
         {
