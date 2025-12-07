@@ -29,7 +29,8 @@ app.service("LifeProgAppService", function ($http) {
     // ========================================================================
 
     this.getDataService = function () {
-        return $http("/Def/GetData");
+        return $http.get("/Def/GetData");
+        
     };
 
     // ========================================================================
@@ -147,4 +148,16 @@ app.service("LifeProgAppService", function ($http) {
         });
     };
 
+
+    
+
+});
+
+app.filter("mvcDate", function () {
+    return function (value) {
+        if (!value) return "";
+        // 1. Strip out the /Date( and )/ characters
+        // 2. Parse the numbers into a real JavaScript Date object
+        return new Date(parseInt(value.substr(6)));
+    };
 });

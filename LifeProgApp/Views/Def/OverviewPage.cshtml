@@ -61,6 +61,15 @@
             </button>
         </div>
 
+        @*Button for load users*@
+
+        <button class="btn waves-effect waves-light green darken-1 btn-large"
+                type="button"
+                ng-click="getDataFunc()">
+            <i class="material-icons left">refresh</i>
+            Load Users (READ)
+        </button>
+
         <!-- User Table (READ) -->
         <div class="table-container">
             <h5>All Users (READ)</h5>
@@ -81,8 +90,8 @@
                         <td>{{ user.registrationID }}</td>
                         <td>{{ user.firstName }}</td>
                         <td>{{ user.lastName }}</td>
-                        <td>{{ user.createdAt | date:'yyyy-MM-dd HH:mm' }}</td>
-                        <td>{{ user.updatedAt | date:'yyyy-MM-dd HH:mm' }}</td>
+                        <td>{{ user.createdAt | mvcDate | date:'MMM dd, yyyy hh:mm a' }}</td>
+                        <td>{{ user.updatedAt | mvcDate | date:'MMM dd, yyyy hh:mm a' }}</td>
                         <td>
                             <span class="badge" ng-class="user.isArchived == 0 ? 'active' : 'inactive'">
                                 {{ user.isArchived == 0 ? 'Active' : 'Archived' }}
