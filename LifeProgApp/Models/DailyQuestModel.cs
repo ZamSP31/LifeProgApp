@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
@@ -7,6 +8,8 @@ namespace LifeProgApp.Models
 {
     public class DailyQuestModel
     {
+
+        [Key]
         public int quest_id { get; set; }
         public int user_id { get; set; }
         public string title { get; set; }

@@ -3,7 +3,6 @@
 }
 
 <style>
-    /* YOUR STYLES - UNTOUCHED */
     .form-section {
         background: #fff;
         padding: 30px;
@@ -23,14 +22,13 @@
         background-color: black !important;
     }
 
-    /* Validation colors */
     input.valid, select.valid {
-        border-bottom: 2px solid #2196F3 !important; /* Blue */
+        border-bottom: 2px solid #2196F3 !important;
         box-shadow: none !important;
     }
 
     input.invalid, select.invalid {
-        border-bottom: 2px solid #FF9800 !important; /* Orange */
+        border-bottom: 2px solid #FF9800 !important;
         box-shadow: none !important;
     }
 
@@ -38,30 +36,25 @@
         font-size: 12px;
     }
 
-        /* Required text color (red for all fields) */
         .helper-text.required {
             color: red !important;
             font-weight: bold;
         }
 
-        /* Instructional text color */
         .helper-text.instruction {
-            color: #757575 !important; /* Gray for instructions */
+            color: #757575 !important;
         }
 
-
-    /* Radio button validation */
     .radio-group.valid label span {
-        color: #2196F3; /* Blue */
+        color: #2196F3;
     }
 
     .radio-group.invalid label span {
-        color: #FF9800; /* Orange */
+        color: #FF9800;
     }
 </style>
 
 <div ng-controller="LifeProgAppController">
-
     <div class="container">
         <form name="regForm" class="form-section" ng-submit="saveRegistration()" novalidate>
 
@@ -99,7 +92,6 @@
 
                 <span class="helper-text instruction">Enter 2–20 characters</span>
             </div>
-
 
             <div class="input-field">
                 <input type="text"
@@ -199,10 +191,37 @@
                 <span class="helper-text instruction">Password must be exactly 6 characters</span>
             </div>
 
+            <div class="input-field">
+                <input type="password"
+                       name="confirmPassword"
+                       id="confirmPassword"
+                       ng-model="confirmPassword"
+                       required
+                       ng-minlength="6"
+                       ng-maxlength="6"
+                       maxlength="6"
+                       ng-class="{
+                        'valid': regForm.confirmPassword.$touched && regForm.confirmPassword.$valid && password === confirmPassword,
+                        'invalid': regForm.confirmPassword.$touched && (regForm.confirmPassword.$invalid || password !== confirmPassword)
+                   }">
+                <label for="confirmPassword">Confirm Password</label>
+
+                <span class="helper-text required"
+                      ng-show="regForm.confirmPassword.$touched && regForm.confirmPassword.$error.required">
+                    Required
+                </span>
+
+                <span class="helper-text required"
+                      ng-show="regForm.confirmPassword.$touched && password !== confirmPassword && confirmPassword">
+                    Passwords do not match
+                </span>
+
+                <span class="helper-text instruction">Re-enter your password</span>
+            </div>
 
             <div class="right-align" style="margin-top:20px;">
                 <button type="reset" class="btn grey lighten-1" ng-click="cancelData()">Cancel</button>
-                <button type="submit" class="btn btn-black" ng-disabled="regForm.$invalid">Register</button>
+                <button type="submit" class="btn btn-black" ng-disabled="regForm.$invalid || password !== confirmPassword">Register</button>
             </div>
         </form>
 
@@ -226,5 +245,4 @@
         </table>
 
     </div>
-
 </div>

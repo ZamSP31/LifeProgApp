@@ -39,25 +39,31 @@
         .badge.inactive {
             background-color: #f44336;
         }
+
+    .action-buttons {
+        display: flex;
+        gap: 8px;
+    }
 </style>
 
-<div ng-controller="RegistrationController" class="container">
+<div ng-controller="LifeProgAppController" class="container">
     <div class="main-container">
-        <h1 class="center-align">User Management System</h1>
+        <h1 class="center-align">User Management System (CRUD)</h1>
+        <p class="center-align grey-text">Create, Read, Update, Delete Users</p>
 
-        <!-- SweetAlert Button with Materialize styling -->
+        <!-- Button to go to Registration Page (CREATE) -->
         <div class="btn-container">
             <button class="btn waves-effect waves-light blue darken-1 btn-large"
                     type="button"
-                    ng-click="showSweetAlert()">
+                    ng-click="redirectToRegistration()">
                 <i class="material-icons left">add_circle</i>
-                Update
+                Add New User (CREATE)
             </button>
         </div>
 
-        <!-- User Table with Materialize styling -->
+        <!-- User Table (READ) -->
         <div class="table-container">
-            <h5>User Information</h5>
+            <h5>All Users (READ)</h5>
             <table class="striped highlight responsive-table">
                 <thead>
                     <tr>
@@ -67,11 +73,11 @@
                         <th>Created At</th>
                         <th>Updated At</th>
                         <th>Status</th>
-                        <th>Actions</th>
+                        <th>Actions (UPDATE/DELETE)</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="user in tableValue" ng-click="showUserDetails(user)">
+                    <tr ng-repeat="user in tableValue">
                         <td>{{ user.registrationID }}</td>
                         <td>{{ user.firstName }}</td>
                         <td>{{ user.lastName }}</td>
@@ -83,15 +89,32 @@
                             </span>
                         </td>
                         <td>
-                            <button class="btn-small red"
-                                    ng-click="archiveData(user.registrationID); $event.stopPropagation();"
-                                    ng-if="user.isArchived == 0">
-                                Archive
-                            </button>
+                            <div class="action-buttons">
+                                <!-- UPDATE Button -->
+                                <button class="btn-small blue waves-effect waves-light tooltipped"
+                                        data-position="top"
+                                        data-tooltip="Update User"
+                                        ng-click="updateUser(user); $event.stopPropagation();"
+                                        ng-if="user.isArchived == 0">
+                                    <i class="material-icons">edit</i>
+                                </button>
+
+                                <!-- DELETE Button -->
+                                <button class="btn-small red waves-effect waves-light tooltipped"
+                                        data-position="top"
+                                        data-tooltip="Delete User"
+                                        ng-click="archiveUser(user.registrationID); $event.stopPropagation();"
+                                        ng-if="user.isArchived == 0">
+                                    <i class="material-icons">delete</i>
+                                </button>
+                            </div>
                         </td>
                     </tr>
                     <tr ng-if="!tableValue || tableValue.length == 0">
-                        <td colspan="7" class="center-align">No users found</td>
+                        <td colspan="7" class="center-align grey-text">
+                            <i class="material-icons" style="font-size: 48px; color: #ccc;">inbox</i>
+                            <p>No users found. Click "Add New User" to create one!</p>
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -99,15 +122,49 @@
     </div>
 </div>
 
-<!-- SweetAlert2 CSS -->
-<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css" rel="stylesheet">
+<!-- UPDATE Modal -->
+<div id="updateModal" class="modal">
+    <div class="modal-content">
+        <h4>Update User</h4>
+        <p class="grey-text">Edit user information below</p>
 
-<!-- SweetAlert2 JS -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
+        <div class="row">
+            <div class="input-field col s12">
+                <i class="material-icons prefix">person</i>
+                <input type="text" ng-model="selectedUser.firstName" id="editFirstName">
+                <label for="editFirstName" class="active">First Name</label>
+            </div>
 
+            <div class="input-field col s12">
+                <i class="material-icons prefix">person_outline</i>
+                <input type="text" ng-model="selectedUser.lastName" id="editLastName">
+                <label for="editLastName" class="active">Last Name</label>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button class="btn grey waves-effect waves-light"
+                onclick="M.Modal.getInstance(document.getElementById('updateModal')).close()">
+            <i class="material-icons left">close</i>
+            Cancel
+        </button>
+        <button class="btn blue waves-effect waves-light" ng-click="saveUpdate()">
+            <i class="material-icons left">save</i>
+            Save Changes
+        </button>
+    </div>
+</div>
+
+<!-- Initialize Materialize Components -->
 <script>
-    // Initialize Materialize components when page loads
     document.addEventListener('DOMContentLoaded', function () {
-        M.AutoInit();
+        // Initialize Modal
+        var elems = document.querySelectorAll('.modal');
+        M.Modal.init(elems);
+
+        // Initialize Tooltips
+        var tooltips = document.querySelectorAll('.tooltipped');
+        M.Tooltip.init(tooltips);
     });
 </script>

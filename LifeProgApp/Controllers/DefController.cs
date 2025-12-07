@@ -84,6 +84,37 @@ namespace LifeProgApp.Controllers
             }
         }
 
+
+        // create data
+        [HttpPost]
+        public JsonResult Create(string firstName, string lastName, string gender, string email, string password)
+        {
+            try
+            {
+                using (var db = new Models.AppContext())
+                {
+                    var registration = new tblRegistrationModel
+                    {
+                        firstName = firstName,
+                        lastName = lastName,
+                        createdAt = DateTime.Now,
+                        updatedAt = DateTime.Now,
+                        isArchived = 0
+                    };
+
+                    db.tbl_registration.Add(registration);
+                    db.SaveChanges();
+
+                    return Json(new { success = true, message = "Registration successful!" });
+                }
+            }
+            catch (Exception ex)
+            {
+                var innerMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return Json(new { success = false, message = $"Error: {innerMessage}" });
+            }
+        }
+
         public void UpdateData()
         {
             try

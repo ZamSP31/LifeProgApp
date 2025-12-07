@@ -8,12 +8,13 @@ app.controller("LifeProgAppController", ['$scope', '$window', '$timeout', 'LifeP
     // ========================================================================
     $scope.showSuccess = false;
     $scope.registeredUsers = [];
-    $scope.isArchived = 0; // new code for archiving process
+    $scope.isArchived = 0;
 
 
     // ========================================================================
     // NAVIGATION FUNCTIONS
-        $scope.redirectToLogin = function () {
+    // ========================================================================
+    $scope.redirectToLogin = function () {
         $window.location.href = "/Def/LoginPage";
     };
 
@@ -46,10 +47,7 @@ app.controller("LifeProgAppController", ['$scope', '$window', '$timeout', 'LifeP
     // REGISTRATION FUNCTIONS
     // ========================================================================
 
-    // --- Save Function ---
     $scope.saveRegistration = function () {
-
-        // 1. Validation
         if (!$scope.firstName || !$scope.lastName || !$scope.email) {
             alert("Please fill in First Name, Last Name and Email.");
             return;
@@ -62,34 +60,26 @@ app.controller("LifeProgAppController", ['$scope', '$window', '$timeout', 'LifeP
             }
         }
 
-        // 2. Create Data Object
         var userData = {
-            "FirstName": $scope.firstName,
-            "LastName": $scope.lastName,
+            "firstName": $scope.firstName,
+            "lastName": $scope.lastName,
             "Gender": $scope.gender || "",
             "Email": $scope.email,
             "Password": $scope.password || ""
         };
 
-        // 3. Call the Service
-        // Because we injected LifeProgAppService at the top, this now works!
         var saveData = LifeProgAppService.saveAccount(userData);
 
         saveData.then(function (response) {
             if (response && response.data && response.data.success) {
-
                 if (response.data.message) {
                     alert(response.data.message);
                 } else {
                     alert("Registration successful.");
                 }
-
                 $scope.registeredUsers.push(angular.copy(userData));
-
-                // Reset the form
                 $scope.cancelData();
                 $scope.showSuccess = true;
-
             } else {
                 alert((response && response.data && response.data.message) || "Registration failed.");
             }
@@ -99,7 +89,6 @@ app.controller("LifeProgAppController", ['$scope', '$window', '$timeout', 'LifeP
         });
     };
 
-    // --- Cancel / Reset Function ---
     $scope.cancelData = function () {
         $scope.firstName = null;
         $scope.lastName = null;
@@ -115,34 +104,25 @@ app.controller("LifeProgAppController", ['$scope', '$window', '$timeout', 'LifeP
     // DATA RETRIEVAL FUNCTIONS
     // ========================================================================
 
-    // GetDataService
     $scope.getDataFunc = function () {
         var getData = LifeProgAppService.getDataService();
         getData.then(function (returnedData) {
-            $scope.tableValue = returnedData.data;
+            if (returnedData.data && returnedData.data.data) {
+                $scope.tableValue = returnedData.data.data;  // Access nested data
+            } else {
+                $scope.tableValue = [];
+            }
+        }, function (error) {
+            console.error('Error loading data:', error);
+            $scope.tableValue = [];
         });
     };
-
-    // GetDataService.2
-    // NOTE (getDataFunc) will need to be called somewhere in the HTML to function
-    //    $scope.getDataFunc = function () {
-    //if (isArchived == 0) {
-    //    $scope.isArchived = 1;
-    //} else {
-    //    $scope.isArchived = 0;
-    //}
-    //var getData = LifeProgAppService.getDataService($scope.isArchived);
-    //getData.then(function (returnedData) {
-    //    $scope.tableValue = returnedData.data;
-    //}
-    //};
 
 
     // ========================================================================
     // ARCHIVE FUNCTIONS
     // ========================================================================
 
-    //archiving data service
     $scope.archiveData = function (regID) {
         var getData = LifeProgAppService.archiveDataService(regID);
         getData.then(function (returnedData) {
@@ -150,7 +130,6 @@ app.controller("LifeProgAppController", ['$scope', '$window', '$timeout', 'LifeP
         });
     };
 
-    // ARCHIVE Button Function
     $scope.archiveUser = function (registrationID) {
         Swal.fire({
             title: 'Are you sure?',
@@ -163,7 +142,6 @@ app.controller("LifeProgAppController", ['$scope', '$window', '$timeout', 'LifeP
             cancelButtonText: 'Cancel'
         }).then((result) => {
             if (result.isConfirmed) {
-                // Call the archive service
                 var archivePromise = LifeProgAppService.archiveDataService(registrationID);
 
                 archivePromise.then(function (response) {
@@ -173,8 +151,6 @@ app.controller("LifeProgAppController", ['$scope', '$window', '$timeout', 'LifeP
                         icon: 'success',
                         confirmButtonColor: '#4caf50'
                     });
-
-                    // Refresh the table data
                     $scope.getDataFunc();
                 }, function (error) {
                     console.error('Archive error:', error);
@@ -194,7 +170,6 @@ app.controller("LifeProgAppController", ['$scope', '$window', '$timeout', 'LifeP
     // SWEETALERT & USER INTERACTION FUNCTIONS
     // ========================================================================
 
-    // SweetAlert function
     $scope.showSweetAlert = function () {
         Swal.fire({
             title: 'Welcome!',
@@ -207,7 +182,6 @@ app.controller("LifeProgAppController", ['$scope', '$window', '$timeout', 'LifeP
         });
     };
 
-    // SELECT Button Function
     $scope.selectUser = function (user) {
         Swal.fire({
             title: 'User Selected',
@@ -225,7 +199,6 @@ app.controller("LifeProgAppController", ['$scope', '$window', '$timeout', 'LifeP
             confirmButtonText: 'OK',
             confirmButtonColor: '#1976d2'
         });
-
         console.log('Selected User:', user);
     };
 
@@ -234,18 +207,13 @@ app.controller("LifeProgAppController", ['$scope', '$window', '$timeout', 'LifeP
     // UPDATE FUNCTIONS
     // ========================================================================
 
-    // UPDATE Button Function
     $scope.updateUser = function (user) {
-        // Store selected user in scope
         $scope.selectedUser = angular.copy(user);
-
-        // Open Materialize modal
         var elem = document.getElementById('updateModal');
         var instance = M.Modal.getInstance(elem);
         instance.open();
     };
 
-    // SAVE UPDATE Function (called from modal)
     $scope.saveUpdate = function () {
         if (!$scope.selectedUser.firstName || !$scope.selectedUser.lastName) {
             Swal.fire({
@@ -257,14 +225,12 @@ app.controller("LifeProgAppController", ['$scope', '$window', '$timeout', 'LifeP
             return;
         }
 
-        // Prepare data for update
         var updateData = {
             registrationID: $scope.selectedUser.registrationID,
             firstName: $scope.selectedUser.firstName,
             lastName: $scope.selectedUser.lastName
         };
 
-        // Call service to update (you'll need to create this in Service.js)
         var updatePromise = LifeProgAppService.updateUserService(updateData);
 
         updatePromise.then(function (response) {
@@ -275,13 +241,9 @@ app.controller("LifeProgAppController", ['$scope', '$window', '$timeout', 'LifeP
                     icon: 'success',
                     confirmButtonColor: '#4caf50'
                 });
-
-                // Close modal
                 var elem = document.getElementById('updateModal');
                 var instance = M.Modal.getInstance(elem);
                 instance.close();
-
-                // Refresh data
                 $scope.getDataFunc();
             } else {
                 Swal.fire({
@@ -307,7 +269,6 @@ app.controller("LifeProgAppController", ['$scope', '$window', '$timeout', 'LifeP
     // FILE UPLOAD FUNCTIONS
     // ========================================================================
 
-    // Upload File function
     $scope.uploadfile = function () {
         var input = document.getElementById('fileInput');
         var file = input.files[0];
@@ -321,7 +282,6 @@ app.controller("LifeProgAppController", ['$scope', '$window', '$timeout', 'LifeP
         uploadData.then(function (returnedData) {
             if (returnedData && returnedData.data) {
                 alert(returnedData.data.Message);
-                // Refresh carousel after upload
                 $scope.getCarouselImages();
             }
         });
@@ -332,13 +292,11 @@ app.controller("LifeProgAppController", ['$scope', '$window', '$timeout', 'LifeP
     // CAROUSEL/GALLERY FUNCTIONS
     // ========================================================================
 
-    // Get Carousel Images
     $scope.getCarouselImages = function () {
         var getData = LifeProgAppService.getCarouselImagesService();
         getData.then(function (returnedData) {
             $scope.carouselImages = returnedData.data;
 
-            // Initialize Materialize carousel after data loads
             $timeout(function () {
                 var elems = document.querySelectorAll('.carousel');
                 M.Carousel.init(elems, {
@@ -348,65 +306,5 @@ app.controller("LifeProgAppController", ['$scope', '$window', '$timeout', 'LifeP
             }, 100);
         });
     };
-
-
-    // ========================================================================
-    // INITIALIZATION
-    // ========================================================================
-
-    // Initialize data on page load
-   
-
-    // ========================================================================
-    // COMMENTED OUT CODE (Old Implementations)
-    // ========================================================================
-
-    //    $scope.saveRegistration = function () {
-    //        if (!$scope.firstName || !$scope.lastName || !$scope.email) {
-    //            alert("Please fill in First Name, Last Name and Email.");
-    //            return;
-    //        }
-    //        if ($scope.password || $scope.confirmPassword) {
-    //            if ($scope.password !== $scope.confirmPassword) {
-    //                alert("Passwords do not match.");
-    //                return;
-    //            }
-    //        }
-    //        var userData = {
-    //            "FirstName": $scope.firstName,
-    //            "LastName": $scope.lastName,
-    //            "Gender": $scope.gender || "",
-    //            "Email": $scope.email,
-    //            "Password": $scope.password || ""
-    //        };
-    //        var saveData = LifeProgAppService.saveAccount(userData);
-    //        saveData.then(function (response) {
-    //            if (response && response.data && response.data.success) {
-    //                if (response.data.message) {
-    //                    alert(response.data.message);
-    //                } else {
-    //                    alert("Registration successful.");
-    //                }
-    //                $scope.registeredUsers.push(angular.copy(userData));
-    //                $scope.cancelData();
-    //                $scope.showSuccess = true;
-    //            } else {
-    //                alert((response && response.data && response.data.message) || "Registration failed.");
-    //            }
-    //        }, function (error) {
-    //            console.error("Save error:", error);
-    //            alert("An error occurred while saving the registration.");
-    //        });
-    //    };
-
-    //    $scope.cancelData = function () {
-    //        $scope.firstName = null;
-    //        $scope.lastName = null;
-    //        $scope.gender = null;
-    //        $scope.email = null;
-    //        $scope.password = null;
-    //        $scope.confirmPassword = null;
-    //        $scope.showSuccess = false;
-    //    };
 
 }]);
