@@ -210,7 +210,7 @@ namespace LifeProgApp.Controllers
 
             if (file != null && file.ContentLength > 0)
             {
-                string uploadPath = Server.MapPath("~/Content/Uploads/");
+                string uploadPath = Server.MapPath("/Content/Uploads/");
                 if (!Directory.Exists(uploadPath))
                     Directory.CreateDirectory(uploadPath);
 
@@ -223,7 +223,7 @@ namespace LifeProgApp.Controllers
                     var newImage = new tblImagesModel
                     {
                         imageName = fileName,
-                        imagePath = "~/Content/Uploads/" + fileName,
+                        imagePath = "/Content/Uploads/" + fileName,
                         createdAt = DateTime.Now,
                         updateAt = DateTime.Now
                     };
@@ -246,14 +246,14 @@ namespace LifeProgApp.Controllers
         {
             try
             {
-                if (Request.Files.Count == 0)
+                if (Request.Files.Count == 0)   
                     return Json(new { success = false, message = "No file received" });
 
                 HttpPostedFileBase file = Request.Files[0];
 
                 if (file != null && file.ContentLength > 0)
                 {
-                    string uploadPath = Server.MapPath("~/Content/Uploads/");
+                    string uploadPath = Server.MapPath("/Content/Uploads/");
                     if (!Directory.Exists(uploadPath))
                         Directory.CreateDirectory(uploadPath);
 
@@ -266,8 +266,8 @@ namespace LifeProgApp.Controllers
                         var newImage = new tblImagesModel
                         {
                             imageName = fileName,
-                            imagePath = "~/Content/Uploads/" + fileName,
-                            questID = questId,  // Link to quest
+                            imagePath = "/Content/Uploads/" + fileName,  // ❌ Wrong
+                            questID = questId,
                             createdAt = DateTime.Now,
                             updateAt = DateTime.Now
                         };
@@ -358,6 +358,18 @@ namespace LifeProgApp.Controllers
                                 uploadedAt = image.createdAt
                             })
                         .OrderByDescending(x => x.uploadedAt)
+                        .ToList()
+                        .Select(x => new
+                        {
+                            x.questId,
+                            x.questTitle,
+                            questDate = x.questDate.ToString("yyyy-MM-dd"),
+                            x.isCompleted,
+                            x.imageId,
+                            x.imagePath,
+                            x.imageName,
+                            uploadedAt = x.uploadedAt.ToString("yyyy-MM-dd HH:mm:ss")
+                        })
                         .ToList();
 
                     return Json(new { success = true, data = questPhotos }, JsonRequestBehavior.AllowGet);

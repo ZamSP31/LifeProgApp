@@ -97,18 +97,12 @@
         }
 </style>
 
-<div ng-controller="LifeProgAppController" ng-init="loadAllQuestPhotos()" class="gallery-container">
+<div ng-controller="LifeProgAppController" ng-init="loadAllQuestPhotos(); getCarouselImages()" class="gallery-container">
 
-    <div class="gallery-header">
-        <h2>Quest Photo Gallery</h2>
-        <p>Your journey in pictures - Every photo tells a story of progress</p>
-    </div>
-
+    <!-- Upload Section -->
     <div class="upload-section">
         <h4 style="margin: 0 0 15px 0;">Upload General Gallery Photos</h4>
         <form action="#">
-
-
             @*File Input*@
             <div class="file-field input-field">
                 <div class="btn">
@@ -120,7 +114,6 @@
                 </div>
             </div>
 
-
             @*button*@
             <button class="btn waves-effect waves-light blue" type="button" ng-click="uploadfile()">
                 <i class="material-icons left">cloud_upload</i>
@@ -129,7 +122,19 @@
         </form>
     </div>
 
-    @*Before the Carousel*@
+    <!-- Quest Photo Gallery Header with Refresh Button -->
+    <div class="gallery-header">
+        <h2>Quest Photo Gallery</h2>
+        <p>Your journey in pictures - Every photo tells a story of progress</p>
+
+        <button class="btn waves-effect waves-light blue"
+                ng-click="loadAllQuestPhotos()"
+                style="margin-top: 15px;">
+            <i class="material-icons left">refresh</i>
+            Refresh Gallery
+        </button>
+    </div>
+
     <!-- Quest Photos Grid -->
     <div ng-if="questPhotos && questPhotos.length > 0">
         <h3 style="margin: 0 0 15px 0;">Quest Achievement Photos</h3>
@@ -151,7 +156,7 @@
         </div>
     </div>
 
-    <!-- No Photos Message -->
+    <!-- No Quest Photos Message -->
     <div class="no-photos" ng-if="!questPhotos || questPhotos.length === 0">
         <i class="material-icons">photo_library</i>
         <h4>No Quest Photos Yet</h4>
@@ -161,18 +166,24 @@
         </button>
     </div>
 
-
-
-    <!-- Original Carousel (for general gallery images) -->
-    <div ng-if="carouselImages && carouselImages.length > 0" style="margin-top: 40px;">
+    <!-- General Gallery Carousel Section -->
+    <!-- General Gallery Carousel Section -->
+    <div style="margin-top: 60px;">
         <h3 style="margin: 0 0 15px 0;">General Gallery</h3>
-        <div class="carousel" ng-init="getCarouselImages()">
-            <a class="carousel-item" href="#{{$index}}!" ng-repeat="cimage in carouselImages">
-                <img ng-src="{{cimage.imagePath}}">
-            </a>
+
+        <!-- Carousel (only if images exist) -->
+        <div ng-if="carouselImages && carouselImages.length > 0">
+            <div class="carousel">
+                <a class="carousel-item" href="#{{$index}}!" ng-repeat="cimage in carouselImages">
+                    <img ng-src="{{cimage.imagePath}}">
+                </a>
+            </div>
+        </div>
+
+        <!-- Message if no general gallery images -->
+        <div ng-if="!carouselImages || carouselImages.length === 0" style="text-align: center; padding: 40px; color: #999;">
+            <i class="material-icons" style="font-size: 48px; margin-bottom: 10px; color: #ddd;">photo</i>
+            <p>No general gallery images yet.</p>
         </div>
     </div>
-
-
-
 </div>

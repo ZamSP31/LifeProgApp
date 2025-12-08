@@ -6,16 +6,14 @@ app.controller("LifeProgAppController", ['$scope', '$window', '$timeout', 'LifeP
     // ========================================================================
     // INITIALIZE VARIABLES
     // ========================================================================
-    $scope.today = new Date();  // ← ADDED: Initialize today's date
+    $scope.today = new Date();
     $scope.showSuccess = false;
     $scope.registeredUsers = [];
     $scope.isArchived = 0;
     $scope.todaysQuests = [];
     $scope.questPhotos = [];
-
-    // ← ADDED: Variables from old Module.js (for form validation)
-    $scope.user = {};  // object to store form data
-    $scope.users = []; // array to store submitted users
+    $scope.user = {};
+    $scope.users = [];
 
 
     // ========================================================================
@@ -54,12 +52,11 @@ app.controller("LifeProgAppController", ['$scope', '$window', '$timeout', 'LifeP
     // REGISTRATION FUNCTIONS
     // ========================================================================
 
-    // ADDED: Simple registration (from old Module.js - for form validation)
     $scope.saveRegistrationSimple = function () {
         if ($scope.regForm.$valid) {
             $scope.users.push(angular.copy($scope.user));
-            $scope.user = {};           // reset form model
-            $scope.regForm.$setPristine();  // reset form state
+            $scope.user = {};
+            $scope.regForm.$setPristine();
             $scope.regForm.$setUntouched();
             alert('Registration saved successfully!');
         } else {
@@ -67,7 +64,6 @@ app.controller("LifeProgAppController", ['$scope', '$window', '$timeout', 'LifeP
         }
     };
 
-    // EXISTING: Main registration (with API call)
     $scope.saveRegistration = function () {
         if (!$scope.firstName || !$scope.lastName || !$scope.email) {
             alert("Please fill in First Name, Last Name and Email.");
@@ -151,9 +147,6 @@ app.controller("LifeProgAppController", ['$scope', '$window', '$timeout', 'LifeP
         });
     };
 
-    // ========================================================================
-    // DELETE / ARCHIVE FUNCTION
-    // ========================================================================
     $scope.archiveUser = function (registrationID) {
         Swal.fire({
             title: 'Are you sure?',
@@ -185,7 +178,6 @@ app.controller("LifeProgAppController", ['$scope', '$window', '$timeout', 'LifeP
             }
         });
     };
-
 
     $scope.selectUser = function (user) {
         Swal.fire({
@@ -298,7 +290,6 @@ app.controller("LifeProgAppController", ['$scope', '$window', '$timeout', 'LifeP
 
     // Upload photo for a specific quest
     $scope.uploadQuestPhoto = function (questId) {
-        // Create a hidden file input
         var input = document.createElement('input');
         input.type = 'file';
         input.accept = 'image/*';
@@ -307,7 +298,6 @@ app.controller("LifeProgAppController", ['$scope', '$window', '$timeout', 'LifeP
             var file = e.target.files[0];
             if (!file) return;
 
-            // Show loading
             Swal.fire({
                 title: 'Uploading...',
                 text: 'Please wait while we upload your photo',
@@ -328,7 +318,6 @@ app.controller("LifeProgAppController", ['$scope', '$window', '$timeout', 'LifeP
                         confirmButtonColor: '#4caf50'
                     });
 
-                    // Reload quests to show photo indicator
                     $scope.loadTodaysQuests();
                 } else {
                     Swal.fire({
@@ -389,32 +378,26 @@ app.controller("LifeProgAppController", ['$scope', '$window', '$timeout', 'LifeP
         });
     };
 
-    // Load all quest photos for gallery
+    // Load all quest photos for gallery (FIXED - removed carousel init)
     $scope.loadAllQuestPhotos = function () {
-        var userId = 1; // You can make this dynamic
+        console.log("=== Loading quest photos ===");
+        var userId = 1;
         var getPhotos = LifeProgAppService.getAllQuestPhotos(userId);
 
         getPhotos.then(function (response) {
+            console.log("Response:", response);
             if (response.data.success) {
                 $scope.questPhotos = response.data.data;
-
-                // Initialize carousel after photos are loaded
-                $timeout(function () {
-                    var elems = document.querySelectorAll('.carousel');
-                    M.Carousel.init(elems, {
-                        fullWidth: true,
-                        indicators: true
-                    });
-                }, 100);
+                console.log("Quest photos loaded:", $scope.questPhotos.length);
             }
         }, function (error) {
             console.error('Error loading quest photos:', error);
         });
     };
 
-    // Load today's quests (for dashboard/goals page)
+    // Load today's quests
     $scope.loadTodaysQuests = function () {
-        var userId = 1; // You can make this dynamic
+        var userId = 1;
         var getQuests = LifeProgAppService.getTodaysQuests(userId);
 
         getQuests.then(function (response) {
@@ -428,7 +411,7 @@ app.controller("LifeProgAppController", ['$scope', '$window', '$timeout', 'LifeP
 
 
     // ========================================================================
-    // CAROUSEL/GALLERY FUNCTIONS
+    // CAROUSEL/GALLERY FUNCTIONS (FIXED)
     // ========================================================================
 
     $scope.getCarouselImages = function () {
@@ -436,13 +419,18 @@ app.controller("LifeProgAppController", ['$scope', '$window', '$timeout', 'LifeP
         getData.then(function (returnedData) {
             $scope.carouselImages = returnedData.data;
 
-            $timeout(function () {
-                var elems = document.querySelectorAll('.carousel');
-                M.Carousel.init(elems, {
-                    fullWidth: true,
-                    indicators: true
-                });
-            }, 100);
+            // Only init carousel if images exist
+            if ($scope.carouselImages && $scope.carouselImages.length > 0) {
+                $timeout(function () {
+                    var elems = document.querySelectorAll('.carousel');
+                    if (elems.length > 0) {
+                        M.Carousel.init(elems, {
+                            fullWidth: true,
+                            indicators: true
+                        });
+                    }
+                }, 200);
+            }
         });
     };
 
