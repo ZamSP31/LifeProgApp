@@ -189,10 +189,12 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\ArchiveStatusModel.cs" />
     <Compile Include="Models\Context\AppContext.cs" />
     <Compile Include="Models\DailyQuestModel.cs" />
     <Compile Include="Models\GoalCategoryModel.cs" />
     <Compile Include="Models\GoalModel.cs" />
+    <Compile Include="Models\Map\ArchiveStatusMap.cs" />
     <Compile Include="Models\Map\tblImagesMap.cs" />
     <Compile Include="Models\Map\tblRegistrationMap.cs" />
     <Compile Include="Models\tblImagesModel.cs" />
@@ -228,6 +230,7 @@
     <Content Include="Scripts\angular-animate.min.js" />
     <Content Include="Scripts\angular-aria.js" />
     <Content Include="Scripts\angular-aria.min.js" />
+    <Content Include="Scripts\angular-chart.min.js" />
     <Content Include="Scripts\angular-cookies.js" />
     <Content Include="Scripts\angular-cookies.min.js" />
     <Content Include="Scripts\angular-csp.css" />

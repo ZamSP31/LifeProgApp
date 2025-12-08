@@ -1,1 +1,1 @@
-﻿var app = angular.module("LifeProgApp", []);
+﻿var app = angular.module("LifeProgApp", ['chart.js']);

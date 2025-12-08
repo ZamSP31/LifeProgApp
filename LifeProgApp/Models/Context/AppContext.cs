@@ -19,5 +19,6 @@ namespace LifeProgApp.Models
         public DbSet<GoalModel> Goals { get; set; }
         public DbSet<GoalCategoryModel> GoalCategories { get; set; }
         public DbSet<DailyQuestModel> DailyQuests { get; set; }
+        public DbSet<ArchiveStatusModel> archive_status { get; set; }
     }
 }
