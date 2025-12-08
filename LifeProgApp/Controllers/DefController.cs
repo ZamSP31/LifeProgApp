@@ -9,7 +9,7 @@ using System.Web.Mvc;
 using System.Web.Services.Description;
 
 namespace LifeProgApp.Controllers
-{   // <--- FIXED: Added the missing bracket here!
+{
     public class DefController : Controller
     {
         // ====================================================================
@@ -136,8 +136,8 @@ namespace LifeProgApp.Controllers
         }
 
         // UPDATED: Fixed ArchiveData to accept the Model (Prevents 500 Error on Delete)
-     
-        public JsonResult ArchiveData(tblRegistrationModel user) // <--- Correct: Accepts Model
+
+        public JsonResult ArchiveData(tblRegistrationModel user)
         {
             try
             {
@@ -167,7 +167,7 @@ namespace LifeProgApp.Controllers
         // ====================================================================
 
         [HttpPost]
-        public JsonResult UpdateUser(tblRegistrationModel user) // Correctly accepts the model
+        public JsonResult UpdateUser(tblRegistrationModel user)
         {
             try
             {
@@ -236,6 +236,137 @@ namespace LifeProgApp.Controllers
             }
 
             return Json(new { Message = "Upload Failed." });
+        }
+
+        // ====================================================================
+        // NEW: QUEST PHOTO UPLOAD METHOD
+        // ====================================================================
+        [HttpPost]
+        public JsonResult UploadQuestPhoto(int questId)
+        {
+            try
+            {
+                if (Request.Files.Count == 0)
+                    return Json(new { success = false, message = "No file received" });
+
+                HttpPostedFileBase file = Request.Files[0];
+
+                if (file != null && file.ContentLength > 0)
+                {
+                    string uploadPath = Server.MapPath("~/Content/Uploads/");
+                    if (!Directory.Exists(uploadPath))
+                        Directory.CreateDirectory(uploadPath);
+
+                    string fileName = Guid.NewGuid() + Path.GetExtension(file.FileName);
+                    string filePath = Path.Combine(uploadPath, fileName);
+                    file.SaveAs(filePath);
+
+                    using (var db = new Models.AppContext())
+                    {
+                        var newImage = new tblImagesModel
+                        {
+                            imageName = fileName,
+                            imagePath = "~/Content/Uploads/" + fileName,
+                            questID = questId,  // Link to quest
+                            createdAt = DateTime.Now,
+                            updateAt = DateTime.Now
+                        };
+
+                        db.tbl_images.Add(newImage);
+                        db.SaveChanges();
+
+                        // Update quest with imageID
+                        var quest = db.DailyQuests.FirstOrDefault(q => q.quest_id == questId);
+                        if (quest != null)
+                        {
+                            quest.imageID = newImage.imageID;
+                            db.SaveChanges();
+                        }
+
+                        return Json(new
+                        {
+                            success = true,
+                            message = "Photo uploaded successfully!",
+                            imageId = newImage.imageID,
+                            imagePath = "/Content/Uploads/" + fileName
+                        });
+                    }
+                }
+
+                return Json(new { success = false, message = "Upload failed" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = $"Error: {ex.Message}" });
+            }
+        }
+
+        // ====================================================================
+        // NEW: GET QUEST PHOTOS
+        // ====================================================================
+        [HttpGet]
+        public JsonResult GetQuestPhotos(int questId)
+        {
+            try
+            {
+                using (var db = new Models.AppContext())
+                {
+                    var images = db.tbl_images
+                        .Where(i => i.questID == questId)
+                        .Select(i => new
+                        {
+                            imageID = i.imageID,
+                            imageName = i.imageName,
+                            imagePath = i.imagePath,
+                            createdAt = i.createdAt
+                        })
+                        .ToList();
+
+                    return Json(new { success = true, data = images }, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = $"Error: {ex.Message}" }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        // ====================================================================
+        // NEW: GET ALL QUEST PHOTOS FOR USER
+        // ====================================================================
+        [HttpGet]
+        public JsonResult GetAllQuestPhotos(int userId = 1)
+        {
+            try
+            {
+                using (var db = new Models.AppContext())
+                {
+                    var questPhotos = db.DailyQuests
+                        .Where(q => q.user_id == userId && q.imageID != null)
+                        .Join(db.tbl_images,
+                            quest => quest.imageID,
+                            image => image.imageID,
+                            (quest, image) => new
+                            {
+                                questId = quest.quest_id,
+                                questTitle = quest.title,
+                                questDate = quest.quest_date,
+                                isCompleted = quest.is_completed,
+                                imageId = image.imageID,
+                                imagePath = image.imagePath,
+                                imageName = image.imageName,
+                                uploadedAt = image.createdAt
+                            })
+                        .OrderByDescending(x => x.uploadedAt)
+                        .ToList();
+
+                    return Json(new { success = true, data = questPhotos }, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = $"Error: {ex.Message}" }, JsonRequestBehavior.AllowGet);
+            }
         }
 
         public JsonResult GetCarouselImagesFunc()
@@ -348,7 +479,9 @@ namespace LifeProgApp.Controllers
                             description = q.description,
                             difficulty = q.difficulty,
                             xpReward = q.xp_reward,
-                            isCompleted = q.is_completed
+                            isCompleted = q.is_completed,
+                            imageID = q.imageID,  // Include image info
+                            hasPhoto = q.imageID != null
                         })
                         .OrderBy(q => q.isCompleted)
                         .ThenByDescending(q => q.xpReward)

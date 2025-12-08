@@ -2,224 +2,263 @@
     Layout = "~/Views/Shared/_MainLayout.cshtml";
 }
 
+<style>
+    * {
+        box-sizing: border-box;
+    }
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>One % Dashboard — with checkboxes</title>
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        margin: 0;
+        background: #fff;
+        color: #000;
+    }
 
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            margin: 0;
-            background: #fff;
-            color: #000;
-        }
+    /* Header (same as login page) */
+    .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 40px;
+        border-bottom: 1px solid #ddd;
+        background: #fff;
+    }
 
-        /* Header (same as login page) */
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 40px;
-            border-bottom: 1px solid #ddd;
-            background: #fff;
-        }
-
-            .navbar .logo {
-                display: flex;
-                align-items: center;
-                font-weight: bold;
-                font-size: 16px;
-            }
-
-                .navbar .logo span {
-                    margin-left: 6px;
-                }
-
-            .navbar ul {
-                list-style: none;
-                display: flex;
-                gap: 30px;
-            }
-
-                .navbar ul li {
-                    font-size: 14px;
-                    cursor: pointer;
-                    color: #666;
-                }
-
-                    .navbar ul li:hover {
-                        color: #000;
-                    }
-
-            .navbar .user-actions {
-                display: flex;
-                align-items: center;
-                gap: 12px;
-            }
-
-            .navbar button {
-                border: 1px solid #000;
-                background: #fff;
-                padding: 5px 12px;
-                border-radius: 8px;
-                cursor: pointer;
-            }
-
-            .navbar img {
-                width: 28px;
-                height: 28px;
-                border-radius: 50%;
-            }
-
-        .container {
-            padding: 24px 36px;
-        }
-
-        .flex {
-            display: flex;
-            gap: 20px;
-            align-items: flex-start;
-        }
-
-        .card {
-            background: #fff;
-            border: 1px solid #e6e6e6;
-            border-radius: 8px;
-            padding: 16px;
-        }
-
-        /* Today's quest card */
-        .quest-item {
+        .navbar .logo {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px solid #f1f1f1;
-            font-size: 14px;
+            font-weight: bold;
+            font-size: 16px;
         }
 
-            .quest-item:last-child {
-                border-bottom: none;
+            .navbar .logo span {
+                margin-left: 6px;
             }
 
-        .quest-left {
+        .navbar ul {
+            list-style: none;
             display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            min-width: 0;
+            gap: 30px;
         }
 
-
-
-
-
-        .quest-text {
-            min-width: 0;
-        }
-
-            .quest-text .title {
-                display: block;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
-
-            .quest-text .subtitle {
-                display: block;
-                font-size: 12px;
-                color: #777;
-                margin-top: 4px;
-            }
-
-        .xp {
-            color: #111;
-            font-weight: 600;
-            font-size: 13px;
-            flex-shrink: 0;
-            margin-left: 12px;
-        }
-
-        .progress-bar {
-            height: 8px;
-            background: #f1f1f1;
-            border-radius: 6px;
-            overflow: hidden;
-            margin-top: 12px;
-        }
-
-            .progress-bar > span {
-                display: block;
-                height: 100%;
-                background: #000;
-                width: 65%;
-            }
-
-        /* Right column */
-        .stats, .quick-actions {
-            margin-bottom: 16px;
-        }
-
-            .quick-actions button {
-                display: block;
-                width: 100%;
-                padding: 8px;
-                border: 1px solid #d6d6d6;
-                background: #fff;
-                margin-top: 8px;
-                cursor: pointer;
-                border-radius: 6px;
+            .navbar ul li {
                 font-size: 14px;
+                cursor: pointer;
+                color: #666;
             }
 
-        /* Goals row */
-        .goals {
-            margin-top: 28px;
-        }
+                .navbar ul li:hover {
+                    color: #000;
+                }
 
-        .goal-list {
+        .navbar .user-actions {
             display: flex;
-            gap: 16px;
-            margin-top: 12px;
+            align-items: center;
+            gap: 12px;
         }
 
-        .goal-card {
-            flex: 1;
-            padding: 12px;
-            border: 1px solid #e6e6e6;
+        .navbar button {
+            border: 1px solid #000;
+            background: #fff;
+            padding: 5px 12px;
             border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .navbar img {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+        }
+
+    .container {
+        padding: 24px 36px;
+    }
+
+    .flex {
+        display: flex;
+        gap: 20px;
+        align-items: flex-start;
+    }
+
+    .card {
+        background: #fff;
+        border: 1px solid #e6e6e6;
+        border-radius: 8px;
+        padding: 16px;
+    }
+
+    /* Today's quest card */
+    .quest-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid #f1f1f1;
+        font-size: 14px;
+    }
+
+        .quest-item:last-child {
+            border-bottom: none;
+        }
+
+    .quest-left {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        min-width: 0;
+        flex: 1;
+    }
+
+    .quest-text {
+        min-width: 0;
+        flex: 1;
+    }
+
+        .quest-text .title {
+            display: block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .quest-text .subtitle {
+            display: block;
+            font-size: 12px;
+            color: #777;
+            margin-top: 4px;
+        }
+
+    .quest-right {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .xp {
+        color: #111;
+        font-weight: 600;
+        font-size: 13px;
+        flex-shrink: 0;
+    }
+
+    /* Photo buttons */
+    .photo-btn {
+        background: none;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 4px 8px;
+        cursor: pointer;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        transition: all 0.2s;
+    }
+
+        .photo-btn:hover {
+            background: #f5f5f5;
+            border-color: #999;
+        }
+
+        .photo-btn.has-photo {
+            background: #e3f2fd;
+            border-color: #2196F3;
+            color: #1976d2;
+        }
+
+        .photo-btn i {
+            font-size: 16px;
+        }
+
+    .line-through {
+        text-decoration: line-through;
+        color: #999;
+    }
+
+    .progress-bar {
+        height: 8px;
+        background: #f1f1f1;
+        border-radius: 6px;
+        overflow: hidden;
+        margin-top: 12px;
+    }
+
+        .progress-bar > span {
+            display: block;
+            height: 100%;
+            background: #000;
+            width: 65%;
+        }
+
+    /* Right column */
+    .stats, .quick-actions {
+        margin-bottom: 16px;
+    }
+
+        .quick-actions button {
+            display: block;
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #d6d6d6;
+            background: #fff;
+            margin-top: 8px;
+            cursor: pointer;
+            border-radius: 6px;
             font-size: 14px;
         }
 
-        .goal-progress {
-            height: 8px;
-            background: #f1f1f1;
-            border-radius: 6px;
-            overflow: hidden;
-            margin: 8px 0;
+    /* Goals row */
+    .goals {
+        margin-top: 28px;
+    }
+
+    .goal-list {
+        display: flex;
+        gap: 16px;
+        margin-top: 12px;
+    }
+
+    .goal-card {
+        flex: 1;
+        padding: 12px;
+        border: 1px solid #e6e6e6;
+        border-radius: 8px;
+        font-size: 14px;
+    }
+
+    .goal-progress {
+        height: 8px;
+        background: #f1f1f1;
+        border-radius: 6px;
+        overflow: hidden;
+        margin: 8px 0;
+    }
+
+        .goal-progress span {
+            display: block;
+            height: 100%;
+            background: #000;
+            width: 45%;
         }
 
-            .goal-progress span {
-                display: block;
-                height: 100%;
-                background: #000;
-                width: 45%;
-            }
+    /* Material Icons */
+    .material-icons {
+        font-family: 'Material Icons';
+        font-weight: normal;
+        font-style: normal;
+        font-size: 24px;
+        display: inline-block;
+        line-height: 1;
+        text-transform: none;
+        letter-spacing: normal;
+        word-wrap: normal;
+        white-space: nowrap;
+        direction: ltr;
+    }
+</style>
 
-        
-    </style>
-</head>
-<body>
-
-
-  
-
+   <div ng-init="loadTodaysQuests()">
     <div class="container">
         <div class="flex">
             <!-- Left (main) -->
@@ -227,55 +266,113 @@
                 <div class="card">
                     <h3 style="margin:0 0 12px 0; font-size:16px;">
                         Today's Quest
-                        <span style="float:right; font-size:12px; color:#777;">January 15, 2025</span>
+                        <span style="float:right; font-size:12px; color:#777;">{{today | date:'MMMM d, yyyy'}}</span>
                     </h3>
 
-                    <!-- Quest 1 -->
-                    <div class="quest-item">
+                    <!-- Quest Items with Photo Upload -->
+                    <div class="quest-item" ng-repeat="quest in todaysQuests">
                         <div class="quest-left">
-                            <label class="custom-checkbox" aria-label="Morning Meditation">
-                                <input type="checkbox" />
+                            <label class="custom-checkbox" aria-label="{{quest.title}}">
+                                <input type="checkbox"
+                                       ng-model="quest.isCompleted"
+                                       ng-disabled="quest.isCompleted" />
                                 <span class="box" aria-hidden="true"></span>
                             </label>
 
                             <div class="quest-text">
-                                <span class="title">Morning Meditation</span>
-                                <span class="subtitle">10 minutes of mindfulness practice</span>
+                                <span class="title" ng-class="{'line-through': quest.isCompleted}">{{quest.title}}</span>
+                                <span class="subtitle">{{quest.description}}</span>
                             </div>
                         </div>
-                        <div class="xp">+15 XP</div>
+
+                        <div class="quest-right">
+                            <div class="xp">+{{quest.xpReward}} XP</div>
+
+                            <!-- Photo Upload Button -->
+                            <button class="photo-btn"
+                                    ng-class="{'has-photo': quest.hasPhoto}"
+                                    ng-click="uploadQuestPhoto(quest.questId)"
+                                    title="Upload photo proof">
+                                <i class="material-icons">camera_alt</i>
+                            </button>
+
+                            <!-- View Photo Button (only if photo exists) -->
+                            <button class="photo-btn has-photo"
+                                    ng-if="quest.hasPhoto"
+                                    ng-click="viewQuestPhotos(quest.questId, quest.title)"
+                                    title="View photos">
+                                <i class="material-icons">photo_library</i>
+                            </button>
+                        </div>
                     </div>
 
-                    <!-- Quest 2 -->
-                    <div class="quest-item">
-                        <div class="quest-left">
-                            <label class="custom-checkbox" aria-label="Read 20 Pages">
-                                <input type="checkbox" />
-                                <span class="box" aria-hidden="true"></span>
-                            </label>
+                    <!-- Default quests if no data from database -->
+                    <div ng-if="!todaysQuests || todaysQuests.length === 0">
+                        <!-- Quest 1 -->
+                        <div class="quest-item">
+                            <div class="quest-left">
+                                <label class="custom-checkbox" aria-label="Morning Meditation">
+                                    <input type="checkbox" />
+                                    <span class="box" aria-hidden="true"></span>
+                                </label>
 
-                            <div class="quest-text">
-                                <span class="title">Read 20 Pages</span>
-                                <span class="subtitle">Continue your current book</span>
+                                <div class="quest-text">
+                                    <span class="title">Morning Meditation</span>
+                                    <span class="subtitle">10 minutes of mindfulness practice</span>
+                                </div>
+                            </div>
+                            <div class="quest-right">
+                                <div class="xp">+15 XP</div>
+                                <button class="photo-btn" title="Upload photo proof">
+                                    <i class="material-icons">camera_alt</i>
+                                </button>
                             </div>
                         </div>
-                        <div class="xp">+20 XP</div>
-                    </div>
 
-                    <!-- Quest 3 -->
-                    <div class="quest-item">
-                        <div class="quest-left">
-                            <label class="custom-checkbox" aria-label="30-Minute Walk">
-                                <input type="checkbox" checked />
-                                <span class="box" aria-hidden="true"></span>
-                            </label>
+                        <!-- Quest 2 -->
+                        <div class="quest-item">
+                            <div class="quest-left">
+                                <label class="custom-checkbox" aria-label="Read 20 Pages">
+                                    <input type="checkbox" />
+                                    <span class="box" aria-hidden="true"></span>
+                                </label>
 
-                            <div class="quest-text">
-                                <span class="title">30-Minute Walk</span>
-                                <span class="subtitle">Get some fresh air and exercise</span>
+                                <div class="quest-text">
+                                    <span class="title">Read 20 Pages</span>
+                                    <span class="subtitle">Continue your current book</span>
+                                </div>
+                            </div>
+                            <div class="quest-right">
+                                <div class="xp">+20 XP</div>
+                                <button class="photo-btn" title="Upload photo proof">
+                                    <i class="material-icons">camera_alt</i>
+                                </button>
                             </div>
                         </div>
-                        <div class="xp">+25 XP</div>
+
+                        <!-- Quest 3 -->
+                        <div class="quest-item">
+                            <div class="quest-left">
+                                <label class="custom-checkbox" aria-label="30-Minute Walk">
+                                    <input type="checkbox" checked />
+                                    <span class="box" aria-hidden="true"></span>
+                                </label>
+
+                                <div class="quest-text">
+                                    <span class="title">30-Minute Walk</span>
+                                    <span class="subtitle">Get some fresh air and exercise</span>
+                                </div>
+                            </div>
+                            <div class="quest-right">
+                                <div class="xp">+25 XP</div>
+                                <button class="photo-btn has-photo" title="Photo uploaded">
+                                    <i class="material-icons">camera_alt</i>
+                                </button>
+                                <button class="photo-btn has-photo" title="View photos">
+                                    <i class="material-icons">photo_library</i>
+                                </button>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="progress-bar"><span style="width:65%"></span></div>
@@ -297,7 +394,7 @@
                     <h3 style="margin:0 0 8px 0; font-size:16px;">Quick Actions</h3>
                     <button>Add Custom Quest</button>
                     <button>Set New Goal</button>
-                    <button>View Analytics</button>
+                    <button ng-click="redirectToGallery()">View Photo Gallery</button>
                 </div>
             </div>
         </div>
@@ -332,10 +429,6 @@
                 </div>
             </div>
         </div>
-    </div>
-
-
+    </div> 
+</div>
     
-
-</body>
-</html>

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-
+using System.ComponentModel.DataAnnotations.Schema; 
 namespace LifeProgApp.Models
 {
     public class UserInformation

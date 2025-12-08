@@ -30,7 +30,7 @@ app.service("LifeProgAppService", function ($http) {
 
     this.getDataService = function () {
         return $http.get("/Def/GetData");
-        
+
     };
 
     // ========================================================================
@@ -73,6 +73,46 @@ app.service("LifeProgAppService", function ($http) {
             data: fd,
             headers: { 'Content-Type': undefined },
             transformRequest: angular.identity
+        });
+    };
+
+    // ========================================================================
+    // NEW: QUEST PHOTO UPLOAD SERVICE
+    // ========================================================================
+    this.uploadQuestPhoto = function (file, questId) {
+        var fd = new FormData();
+        fd.append('file', file);
+
+        return $http({
+            method: "post",
+            url: "/Def/UploadQuestPhoto",
+            params: { questId: questId },
+            data: fd,
+            headers: { 'Content-Type': undefined },
+            transformRequest: angular.identity
+        });
+    };
+
+    // ========================================================================
+    // NEW: GET QUEST PHOTOS SERVICE
+    // ========================================================================
+    this.getQuestPhotos = function (questId) {
+        return $http({
+            method: "get",
+            url: "/Def/GetQuestPhotos",
+            params: { questId: questId }
+        });
+    };
+
+    // ========================================================================
+    // NEW: GET ALL QUEST PHOTOS SERVICE
+    // ========================================================================
+    this.getAllQuestPhotos = function (userId) {
+        userId = userId || 1;
+        return $http({
+            method: "get",
+            url: "/Def/GetAllQuestPhotos",
+            params: { userId: userId }
         });
     };
 
@@ -147,9 +187,6 @@ app.service("LifeProgAppService", function ($http) {
             url: "/Def/GetGoalCategories"
         });
     };
-
-
-    
 
 });
 

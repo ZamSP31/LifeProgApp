@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
-
+using System.ComponentModel.DataAnnotations.Schema;
 namespace LifeProgApp.Models
 {
-    public class GoalCategoryModel
-    {
+    [Table("goal_categories")]
 
+    public class GoalCategoryModel
+
+
+    {
         [Key]
         public int category_id { get; set; }
         public int category_name { get; set; }

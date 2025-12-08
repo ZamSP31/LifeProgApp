@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LifeProgApp.Models
 {
+    [Table("daily_quests")]
     public class DailyQuestModel
     {
 
@@ -18,6 +20,7 @@ namespace LifeProgApp.Models
         public int xp_reward { get; set; }
         public DateTime quest_date { get; set; }
         public bool is_completed { get; set; }
+        public int? imageID { get; set; }  // ADDED: Optional photo proof
         public DateTime created_at { get; set; }
         public DateTime updated_at { get; set; }
     }

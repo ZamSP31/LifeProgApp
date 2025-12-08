@@ -6,9 +6,16 @@ app.controller("LifeProgAppController", ['$scope', '$window', '$timeout', 'LifeP
     // ========================================================================
     // INITIALIZE VARIABLES
     // ========================================================================
+    $scope.today = new Date();  // ← ADDED: Initialize today's date
     $scope.showSuccess = false;
     $scope.registeredUsers = [];
     $scope.isArchived = 0;
+    $scope.todaysQuests = [];
+    $scope.questPhotos = [];
+
+    // ← ADDED: Variables from old Module.js (for form validation)
+    $scope.user = {};  // object to store form data
+    $scope.users = []; // array to store submitted users
 
 
     // ========================================================================
@@ -47,6 +54,20 @@ app.controller("LifeProgAppController", ['$scope', '$window', '$timeout', 'LifeP
     // REGISTRATION FUNCTIONS
     // ========================================================================
 
+    // ADDED: Simple registration (from old Module.js - for form validation)
+    $scope.saveRegistrationSimple = function () {
+        if ($scope.regForm.$valid) {
+            $scope.users.push(angular.copy($scope.user));
+            $scope.user = {};           // reset form model
+            $scope.regForm.$setPristine();  // reset form state
+            $scope.regForm.$setUntouched();
+            alert('Registration saved successfully!');
+        } else {
+            alert('Please complete all required fields.');
+        }
+    };
+
+    // EXISTING: Main registration (with API call)
     $scope.saveRegistration = function () {
         if (!$scope.firstName || !$scope.lastName || !$scope.email) {
             alert("Please fill in First Name, Last Name and Email.");
@@ -108,7 +129,7 @@ app.controller("LifeProgAppController", ['$scope', '$window', '$timeout', 'LifeP
         var getData = LifeProgAppService.getDataService();
         getData.then(function (returnedData) {
             if (returnedData.data && returnedData.data.data) {
-                $scope.tableValue = returnedData.data.data;  // Access nested data
+                $scope.tableValue = returnedData.data.data;
             } else {
                 $scope.tableValue = [];
             }
@@ -139,12 +160,11 @@ app.controller("LifeProgAppController", ['$scope', '$window', '$timeout', 'LifeP
             text: "Do you want to archive this user?",
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#f44336', // Red color
+            confirmButtonColor: '#f44336',
             cancelButtonColor: '#9e9e9e',
             confirmButtonText: 'Yes, archive it!'
         }).then((result) => {
             if (result.isConfirmed) {
-                // Call the Service you just wrote
                 var archivePromise = LifeProgAppService.archiveDataService(registrationID);
 
                 archivePromise.then(function (response) {
@@ -154,7 +174,6 @@ app.controller("LifeProgAppController", ['$scope', '$window', '$timeout', 'LifeP
                             'User has been archived.',
                             'success'
                         );
-                        // Refresh the table to show the user is gone
                         $scope.getDataFunc();
                     } else {
                         Swal.fire('Error', response.data.message || 'Failed to archive', 'error');
@@ -167,7 +186,7 @@ app.controller("LifeProgAppController", ['$scope', '$window', '$timeout', 'LifeP
         });
     };
 
-    
+
     $scope.selectUser = function (user) {
         Swal.fire({
             title: 'User Selected',
@@ -270,6 +289,140 @@ app.controller("LifeProgAppController", ['$scope', '$window', '$timeout', 'LifeP
                 alert(returnedData.data.Message);
                 $scope.getCarouselImages();
             }
+        });
+    };
+
+    // ========================================================================
+    // NEW: QUEST PHOTO FUNCTIONS
+    // ========================================================================
+
+    // Upload photo for a specific quest
+    $scope.uploadQuestPhoto = function (questId) {
+        // Create a hidden file input
+        var input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+
+        input.onchange = function (e) {
+            var file = e.target.files[0];
+            if (!file) return;
+
+            // Show loading
+            Swal.fire({
+                title: 'Uploading...',
+                text: 'Please wait while we upload your photo',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            var uploadPromise = LifeProgAppService.uploadQuestPhoto(file, questId);
+
+            uploadPromise.then(function (response) {
+                if (response.data.success) {
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'Photo uploaded successfully!',
+                        icon: 'success',
+                        confirmButtonColor: '#4caf50'
+                    });
+
+                    // Reload quests to show photo indicator
+                    $scope.loadTodaysQuests();
+                } else {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: response.data.message || 'Upload failed',
+                        icon: 'error',
+                        confirmButtonColor: '#f44336'
+                    });
+                }
+            }, function (error) {
+                console.error('Upload error:', error);
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'An error occurred while uploading',
+                    icon: 'error',
+                    confirmButtonColor: '#f44336'
+                });
+            });
+        };
+
+        input.click();
+    };
+
+    // View photos for a specific quest
+    $scope.viewQuestPhotos = function (questId, questTitle) {
+        var getPhotos = LifeProgAppService.getQuestPhotos(questId);
+
+        getPhotos.then(function (response) {
+            if (response.data.success && response.data.data.length > 0) {
+                var images = response.data.data;
+                var imageHtml = images.map(function (img) {
+                    return `<img src="${img.imagePath}" style="max-width:100%; margin:10px 0; border-radius:8px;">`;
+                }).join('');
+
+                Swal.fire({
+                    title: questTitle + ' - Photos',
+                    html: imageHtml,
+                    width: 600,
+                    confirmButtonText: 'Close',
+                    confirmButtonColor: '#1976d2'
+                });
+            } else {
+                Swal.fire({
+                    title: 'No Photos',
+                    text: 'No photos uploaded for this quest yet.',
+                    icon: 'info',
+                    confirmButtonColor: '#1976d2'
+                });
+            }
+        }, function (error) {
+            console.error('Error loading photos:', error);
+            Swal.fire({
+                title: 'Error!',
+                text: 'Failed to load photos',
+                icon: 'error',
+                confirmButtonColor: '#f44336'
+            });
+        });
+    };
+
+    // Load all quest photos for gallery
+    $scope.loadAllQuestPhotos = function () {
+        var userId = 1; // You can make this dynamic
+        var getPhotos = LifeProgAppService.getAllQuestPhotos(userId);
+
+        getPhotos.then(function (response) {
+            if (response.data.success) {
+                $scope.questPhotos = response.data.data;
+
+                // Initialize carousel after photos are loaded
+                $timeout(function () {
+                    var elems = document.querySelectorAll('.carousel');
+                    M.Carousel.init(elems, {
+                        fullWidth: true,
+                        indicators: true
+                    });
+                }, 100);
+            }
+        }, function (error) {
+            console.error('Error loading quest photos:', error);
+        });
+    };
+
+    // Load today's quests (for dashboard/goals page)
+    $scope.loadTodaysQuests = function () {
+        var userId = 1; // You can make this dynamic
+        var getQuests = LifeProgAppService.getTodaysQuests(userId);
+
+        getQuests.then(function (response) {
+            if (response.data.success) {
+                $scope.todaysQuests = response.data.data;
+            }
+        }, function (error) {
+            console.error('Error loading quests:', error);
         });
     };
 

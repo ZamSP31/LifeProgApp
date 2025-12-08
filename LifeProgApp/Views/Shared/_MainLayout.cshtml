@@ -257,14 +257,13 @@
 
     <!-- Load Scripts in correct order -->
     <script src="~/Scripts/jquery-3.7.0.min.js"></script>
-    <script src="~/Scripts/angular.min.js"></script>
+    <script src="~/Scripts/angular.min.js"></script>  <!-- ← MUST BE BEFORE Module.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script src="~/Scripts/FynScripts/Module.js"></script>
     <script src="~/Scripts/FynScripts/Service.js"></script>
     <script src="~/Scripts/FynScripts/Controller.js"></script>
-
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -274,7 +273,12 @@
                 indicators: true
             });
         });
+
+        console.log("Angular loaded?", typeof angular !== 'undefined');
+        console.log("jQuery loaded?", typeof $ !== 'undefined');
     </script>
+
+
 
 </body>
 </html>
