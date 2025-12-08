@@ -188,6 +188,44 @@ app.service("LifeProgAppService", function ($http) {
         });
     };
 
+    // ========================================================================
+    // CHART DATA SERVICES
+    // ========================================================================
+
+    this.getUserStatusChart = function () {
+        return $http({
+            method: "get",
+            url: "/Def/GetUserStatusChart"
+        });
+    };
+
+    // ========================================================================
+    // ARCHIVE STATISTICS SERVICES
+    // ========================================================================
+
+    this.getArchiveStats = function () {
+        return $http({
+            method: "get",
+            url: "/Def/GetArchiveStats"
+        });
+    };
+
+    this.getArchiveHistory = function (limit) {
+        return $http({
+            method: "get",
+            url: "/Def/GetArchiveHistory",
+            params: { limit: limit || 10 }
+        });
+    };
+
+    this.restoreUser = function (registrationID) {
+        return $http({
+            method: "post",
+            url: "/Def/RestoreUser",
+            data: { registrationID: registrationID }
+        });
+    };
+
 });
 
 app.filter("mvcDate", function () {

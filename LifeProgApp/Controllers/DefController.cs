@@ -135,8 +135,11 @@ namespace LifeProgApp.Controllers
             }
         }
 
-        // UPDATED: Fixed ArchiveData to accept the Model (Prevents 500 Error on Delete)
+        // ====================================================================
+        // ARCHIVE DATA METHOD
+        // ====================================================================
 
+        [HttpPost]
         public JsonResult ArchiveData(tblRegistrationModel user)
         {
             try
@@ -149,9 +152,23 @@ namespace LifeProgApp.Controllers
 
                     if (dataToArchive != null)
                     {
-                        dataToArchive.isArchived = 1; // Soft delete
+                        // Update the registration record (soft delete)
+                        dataToArchive.isArchived = 1;
+                        dataToArchive.updatedAt = DateTime.Now;
+
+                        // Create archive status record WITH LINK to user
+                        var archiveRecord = new ArchiveStatusModel
+                        {
+                            registrationID = dataToArchive.registrationID,  // ← LINK IT
+                            stat_description = $"{dataToArchive.firstName} {dataToArchive.lastName} archived",
+                            created_at = DateTime.Now,
+                            updated_at = DateTime.Now
+                        };
+
+                        db.archive_status.Add(archiveRecord);
                         db.SaveChanges();
-                        return Json(new { success = true, message = "User archived" }, JsonRequestBehavior.AllowGet);
+
+                        return Json(new { success = true, message = "User archived successfully" }, JsonRequestBehavior.AllowGet);
                     }
                     return Json(new { success = false, message = "User not found" }, JsonRequestBehavior.AllowGet);
                 }
@@ -161,6 +178,121 @@ namespace LifeProgApp.Controllers
                 return Json(new { success = false, message = $"Error: {ex.Message}" }, JsonRequestBehavior.AllowGet);
             }
         }
+        //// ====================================================================
+        //// NEW: RESTORE ARCHIVED USER
+        //// ====================================================================
+        //[HttpPost]
+        //public JsonResult RestoreUser(int registrationID)
+        //{
+        //    try
+        //    {
+        //        using (var db = new Models.AppContext())
+        //        {
+        //            var user = db.tbl_registration
+        //                        .Where(x => x.registrationID == registrationID)
+        //                        .FirstOrDefault();
+
+        //            if (user != null)
+        //            {
+        //                user.isArchived = 0; // Restore user
+        //                user.updatedAt = DateTime.Now;
+
+        //                // Create restore record for chart
+        //                var restoreRecord = new ArchiveStatusModel
+        //                {
+        //                    stat_description = $"User {user.firstName} {user.lastName} restored",
+        //                    created_at = DateTime.Now,
+        //                    updated_at = DateTime.Now
+        //                };
+
+        //                db.archive_status.Add(restoreRecord);
+        //                db.SaveChanges();
+
+        //                return Json(new { success = true, message = "User restored successfully" }, JsonRequestBehavior.AllowGet);
+        //            }
+        //            return Json(new { success = false, message = "User not found" }, JsonRequestBehavior.AllowGet);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return Json(new { success = false, message = $"Error: {ex.Message}" }, JsonRequestBehavior.AllowGet);
+        //    }
+        //}
+
+        //// ====================================================================
+        //// NEW: GET ARCHIVE STATISTICS FOR CHARTS
+        //// ====================================================================
+        //[HttpGet]
+        //public JsonResult GetArchiveStats()
+        //{
+        //    try
+        //    {
+        //        using (var db = new Models.AppContext())
+        //        {
+        //            // Get archive counts by date
+        //            var archiveStats = db.archive_status
+        //                .GroupBy(a => DbFunctions.TruncateTime(a.created_at))
+        //                .Select(g => new
+        //                {
+        //                    date = g.Key,
+        //                    count = g.Count()
+        //                })
+        //                .OrderBy(x => x.date)
+        //                .Take(30) // Last 30 days
+        //                .ToList();
+
+        //            // Get total archived vs active users
+        //            var totalUsers = db.tbl_registration.Count();
+        //            var archivedUsers = db.tbl_registration.Count(u => u.isArchived == 1);
+        //            var activeUsers = totalUsers - archivedUsers;
+
+        //            var summary = new
+        //            {
+        //                totalUsers,
+        //                archivedUsers,
+        //                activeUsers,
+        //                dailyArchives = archiveStats
+        //            };
+
+        //            return Json(new { success = true, data = summary }, JsonRequestBehavior.AllowGet);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return Json(new { success = false, message = $"Error: {ex.Message}" }, JsonRequestBehavior.AllowGet);
+        //    }
+        //}
+
+        //// ====================================================================
+        //// NEW: GET ARCHIVE HISTORY
+        //// ====================================================================
+        //[HttpGet]
+        //public JsonResult GetArchiveHistory(int limit = 10)
+        //{
+        //    try
+        //    {
+        //        using (var db = new Models.AppContext())
+        //        {
+        //            var history = db.archive_status
+        //                .OrderByDescending(a => a.created_at)
+        //                .Take(limit)
+        //                .Select(a => new
+        //                {
+        //                    statusId = a.status_id,
+        //                    description = a.stat_description,
+        //                    createdAt = a.created_at
+        //                })
+        //                .ToList();
+
+        //            return Json(new { success = true, data = history }, JsonRequestBehavior.AllowGet);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return Json(new { success = false, message = $"Error: {ex.Message}" }, JsonRequestBehavior.AllowGet);
+        //    }
+        //}
+
 
         // ====================================================================
         // UPDATE USER
@@ -636,26 +768,32 @@ namespace LifeProgApp.Controllers
         // DASHBOARD CHARTS METHODS
         // ==========================================
 
-        //public JsonResult GetBarData()
-        //{
-        //    try
-        //    {
-        //        using (var db = new Models.AppContext())
-        //        {
-        //            List<string> seriesList = new List<string>();  
-        //            var seriesData = db.archive_status.Select(x => x).ToList();
-        //            foreach (var item in collection)
-        //            {
-        //                seriesList.Add(ewanseries.stats_description)
-        //            }
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return Json(new { success = false, message = $"Error: {ex.Message}" }, JsonRequestBehavior.AllowGet);
+        // ==========================================
+        // CHART #1: USER STATUS DISTRIBUTION
+        // ==========================================
 
-        //    }
-        //}
+        [HttpGet]
+        public JsonResult GetUserStatusChart()
+        {
+            try
+            {
+                using (var db = new Models.AppContext())
+                {
+                    var active = db.tbl_registration.Count(u => u.isArchived == 0);
+                    var archived = db.tbl_registration.Count(u => u.isArchived == 1);
+
+                    return Json(new
+                    {
+                        success = true,
+                        data = new { active, archived }
+                    }, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = $"Error: {ex.Message}" }, JsonRequestBehavior.AllowGet);
+            }
+        }
     }
 
     

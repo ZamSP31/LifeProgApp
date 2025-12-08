@@ -14,7 +14,9 @@ namespace LifeProgApp.Models
         [Key]
         public int status_id { get; set; }
         public string stat_description { get; set; }
-       
+
+        public int? registrationID { get; set; }
+
         public DateTime created_at { get; set; }
         public DateTime updated_at { get; set; }
     }

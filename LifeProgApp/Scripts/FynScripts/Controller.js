@@ -447,4 +447,34 @@ app.controller("LifeProgAppController", ['$scope', '$window', '$timeout', 'LifeP
         });
     };
 
+
+    // ========================================================================
+    // CHART FUNCTIONS
+    // ========================================================================
+
+    // Load user status chart data
+    $scope.loadUserStatusChart = function () {
+        console.log("Loading user status chart...");
+
+        var getData = LifeProgAppService.getUserStatusChart();
+
+        getData.then(function (response) {
+            console.log("Chart data received:", response.data);
+
+            if (response.data.success) {
+                $scope.userStatusData = [
+                    response.data.data.active,
+                    response.data.data.archived
+                ];
+                $scope.userStatusLabels = ['Active Users', 'Archived Users'];
+                $scope.userStatusColors = ['#4caf50', '#f44336'];
+
+                console.log("Chart configured:", $scope.userStatusData);
+            }
+        }, function (error) {
+            console.error('Error loading chart data:', error);
+        });
+    };
+
+
 }]);

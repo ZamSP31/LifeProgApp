@@ -3,129 +3,384 @@
 }
 
 <style>
-    .main-container {
-        margin-top: 20px;
-        padding: 30px;
-        background-color: white;
-        border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    * {
+        box-sizing: border-box;
     }
 
-    .btn-container {
-        margin: 30px 0;
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        background: #fafafa;
+        color: #111;
+    }
+
+    .hero-section {
         text-align: center;
+        padding: 60px 20px 40px;
+        background: #fff;
+        border-bottom: 1px solid #eee;
     }
 
-    .table-container {
-        overflow-x: auto;
-    }
-
-    table.highlight tbody tr:hover {
-        background-color: #e3f2fd;
-        cursor: pointer;
-    }
-
-    .badge {
-        padding: 4px 12px;
-        border-radius: 12px;
-        color: white;
-        font-size: 0.85em;
-    }
-
-        .badge.active {
-            background-color: #4caf50;
+        .hero-section h1 {
+            margin: 0 0 10px 0;
+            font-size: 28px;
+            font-weight: 600;
         }
 
-        .badge.inactive {
-            background-color: #f44336;
+        .hero-section p {
+            color: #666;
+            font-size: 14px;
+            margin: 0 0 30px 0;
+        }
+
+    .btn-container {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn-primary {
+        background: #111;
+        color: #fff;
+        border: none;
+        padding: 12px 24px;
+        font-weight: 600;
+        font-size: 14px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+
+        .btn-primary:hover {
+            background: #333;
+        }
+
+    .btn-secondary {
+        background: #fff;
+        color: #111;
+        border: 1px solid #ccc;
+        padding: 12px 24px;
+        font-weight: 600;
+        font-size: 14px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: border-color 0.2s;
+    }
+
+        .btn-secondary:hover {
+            border-color: #111;
+        }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 24px;
+    }
+
+    .content-wrapper {
+        max-width: 100%;
+        margin: 0 auto;
+    }
+
+
+    /* Charts Section */
+    .charts-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 30px;
+        margin-bottom: 40px;
+    }
+
+    .chart-card {
+        background: #fff;
+        border-radius: 8px;
+        padding: 24px;
+        box-shadow: 0 0 8px rgba(0,0,0,0.05);
+        border: 1px solid #eee;
+    }
+
+        .chart-card h3 {
+            margin: 0 0 20px 0;
+            font-size: 16px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+    .chart-stats {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 15px;
+        flex-wrap: wrap;
+    }
+
+    .stat-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        border-radius: 16px;
+        font-size: 13px;
+        font-weight: 500;
+    }
+
+        .stat-chip.green {
+            background: #4caf50;
+            color: white;
+        }
+
+        .stat-chip.red {
+            background: #f44336;
+            color: white;
+        }
+
+        .stat-chip.blue {
+            background: #2196F3;
+            color: white;
+        }
+
+        .stat-chip i {
+            font-size: 16px;
+        }
+
+    /* Table Section */
+    .table-section {
+        background: #fff;
+        border-radius: 8px;
+        padding: 24px;
+        box-shadow: 0 0 8px rgba(0,0,0,0.05);
+        border: 1px solid #eee;
+    }
+
+        .table-section h2 {
+            margin: 0 0 20px 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+    }
+
+        table thead {
+            background: #fafafa;
+            border-bottom: 2px solid #eee;
+        }
+
+        table th {
+            text-align: left;
+            padding: 12px;
+            font-weight: 600;
+            color: #666;
+            font-size: 13px;
+        }
+
+        table td {
+            padding: 12px;
+            border-bottom: 1px solid #f5f5f5;
+        }
+
+        table tbody tr:hover {
+            background: #fafafa;
+            cursor: pointer;
+        }
+
+    .status-badge {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+
+        .status-badge.active {
+            background: #e8f5e9;
+            color: #4caf50;
+        }
+
+        .status-badge.archived {
+            background: #ffebee;
+            color: #f44336;
         }
 
     .action-buttons {
         display: flex;
         gap: 8px;
     }
+
+    .btn-icon {
+        background: none;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 6px 10px;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 13px;
+    }
+
+        .btn-icon:hover {
+            background: #f5f5f5;
+            border-color: #999;
+        }
+
+        .btn-icon.edit {
+            color: #2196F3;
+        }
+
+        .btn-icon.delete {
+            color: #f44336;
+        }
+
+        .btn-icon i {
+            font-size: 16px;
+        }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #999;
+    }
+
+        .empty-state i {
+            font-size: 48px;
+            color: #ddd;
+            margin-bottom: 12px;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+            margin: 8px 0;
+        }
 </style>
 
-<div ng-controller="LifeProgAppController" class="container">
-    <div class="main-container">
-        <h1 class="center-align">USER MANAGEMENT SYSTEM</h1>
-        <p class="center-align grey-text">Create, Read, Update, Delete Users</p>
+<div ng-controller="LifeProgAppController" ng-init="loadUserStatusChart(); loadRegistrationTrend()" class="container">
 
-        <!-- Button to go to Registration Page (CREATE) -->
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <h1>USER MANAGEMENT SYSTEM</h1>
+
         <div class="btn-container">
-            <button class="btn waves-effect waves-light blue darken-1 btn-large"
-                    type="button"
-                    ng-click="redirectToRegistration()">
-                <i class="material-icons left">add_circle</i>
+            <button class="btn-primary" ng-click="redirectToRegistration()">
+                <i class="material-icons" style="vertical-align: middle; margin-right: 4px; font-size: 18px;">add_circle</i>
                 Add New User
             </button>
+            <button class="btn-secondary" ng-click="getDataFunc()">
+                <i class="material-icons" style="vertical-align: middle; margin-right: 4px; font-size: 18px;">refresh</i>
+                Load Users
+            </button>
         </div>
+    </div>
 
-        @*Button for load users*@
 
-        <button class="btn waves-effect waves-light green darken-1 btn-large"
-                type="button"
-                ng-click="getDataFunc()">
-            <i class="material-icons left">refresh</i>
-            Load Users
-        </button>
+    <!-- Charts Section -->
+    <div class="container">
+        <div class="content-wrapper">
+            <div class="charts-grid">
+                <!-- Chart 1: Pie Chart -->
+                <div class="chart-card">
+                    <h3>User Status Distribution</h3>
+                    <div style="max-width: 300px; margin: 0 auto;">
+                        <canvas id="userStatusChart"
+                                class="chart chart-pie"
+                                chart-data="userStatusData"
+                                chart-labels="userStatusLabels"
+                                chart-colors="userStatusColors"
+                                chart-options="{responsive: true, maintainAspectRatio: true}">
+                        </canvas>
+                    </div>
+                    <div class="chart-stats">
+                        <span class="stat-chip green">
+                            <i class="material-icons">check_circle</i>
+                            Active: {{userStatusData[0] || 0}}
+                        </span>
+                        <span class="stat-chip red">
+                            <i class="material-icons">archive</i>
+                            Archived: {{userStatusData[1] || 0}}
+                        </span>
+                    </div>
+                </div>
 
-        <!-- User Table (READ) -->
-        <div class="table-container">
-            <h5>All Users (READ)</h5>
-            <table class="striped highlight responsive-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Created At</th>
-                        <th>Updated At</th>
-                        <th>Status</th>
-                        <th>Actions (UPDATE/DELETE)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr ng-repeat="user in tableValue">
-                        <td>{{ user.registrationID }}</td>
-                        <td>{{ user.firstName }}</td>
-                        <td>{{ user.lastName }}</td>
-                        <td>{{ user.createdAt | mvcDate | date:'MMM dd, yyyy hh:mm a' }}</td>
-                        <td>{{ user.updatedAt | mvcDate | date:'MMM dd, yyyy hh:mm a' }}</td>
-                        <td>
-                            <span class="badge" ng-class="user.isArchived == 0 ? 'active' : 'inactive'">
-                                {{ user.isArchived == 0 ? 'Active' : 'Archived' }}
-                            </span>
-                        </td>
-                        <td>
-                            <div class="action-buttons">
-                                <!-- UPDATE Button -->
-                                <button class="btn-small blue waves-effect waves-light tooltipped"
-                                        data-position="top"
-                                        data-tooltip="Update User"
-                                        ng-click="updateUser(user); $event.stopPropagation();"
-                                        ng-if="user.isArchived == 0">
-                                    <i class="material-icons">edit</i>
-                                </button>
+                <!-- Chart 2: Line Chart -->
+                <div class="chart-card">
+                    <h3>User Registration Trend</h3>
+                    <div>
+                        <canvas id="registrationTrendChart"
+                                class="chart chart-line"
+                                chart-data="trendData"
+                                chart-labels="trendLabels"
+                                chart-series="trendSeries"
+                                chart-colors="trendColors"
+                                chart-options="{responsive: true, maintainAspectRatio: true, scales: {yAxes: [{ticks: {beginAtZero: true, stepSize: 1}}]}}">
+                        </canvas>
+                    </div>
+                    <div class="chart-stats">
+                        <span class="stat-chip blue">
+                            <i class="material-icons">trending_up</i>
+                            Total: {{(userStatusData[0] || 0) + (userStatusData[1] || 0)}}
+                        </span>
+                    </div>
+                </div>
+            </div>
 
-                                <!-- DELETE Button -->
-                                <button class="btn-small red waves-effect waves-light tooltipped"
-                                        data-position="top"
-                                        data-tooltip="Delete User"
-                                        ng-click="archiveUser(user.registrationID); $event.stopPropagation();">
-                                    <i class="material-icons">delete</i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr ng-if="!tableValue || tableValue.length == 0">
-                        <td colspan="7" class="center-align grey-text">
-                            <i class="material-icons" style="font-size: 48px; color: #ccc;">inbox</i>
-                            <p>No users found. Click "Add New User" to create one!</p>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <!-- Table Section -->
+            <div class="table-section">
+                <h2>All Users (READ)</h2>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Created At</th>
+                            <th>Updated At</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="user in tableValue" ng-click="selectUser(user)">
+                            <td>{{ user.registrationID }}</td>
+                            <td>{{ user.firstName }}</td>
+                            <td>{{ user.lastName }}</td>
+                            <td>{{ user.createdAt | mvcDate | date:'MMM dd, yyyy hh:mm a' }}</td>
+                            <td>{{ user.updatedAt | mvcDate | date:'MMM dd, yyyy hh:mm a' }}</td>
+                            <td>
+                                <span class="status-badge" ng-class="user.isArchived == 0 ? 'active' : 'archived'">
+                                    {{ user.isArchived == 0 ? 'Active' : 'Archived' }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn-icon edit"
+                                            ng-click="updateUser(user); $event.stopPropagation();"
+                                            ng-if="user.isArchived == 0">
+                                        <i class="material-icons">edit</i>
+                                    </button>
+
+                                    <button class="btn-icon delete"
+                                            ng-click="archiveUser(user.registrationID); $event.stopPropagation();">
+                                        <i class="material-icons">delete</i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr ng-if="!tableValue || tableValue.length == 0">
+                            <td colspan="7">
+                                <div class="empty-state">
+                                    <i class="material-icons">inbox</i>
+                                    <p>No users found. Click "Add New User" to create one!</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
@@ -134,7 +389,7 @@
 <div id="updateModal" class="modal">
     <div class="modal-content">
         <h4>Update User</h4>
-        <p class="grey-text">Edit user information below</p>
+        <p style="color: #666; font-size: 14px;">Edit user information below</p>
 
         <div class="row">
             <div class="input-field col s12">
@@ -167,12 +422,7 @@
 <!-- Initialize Materialize Components -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Initialize Modal
         var elems = document.querySelectorAll('.modal');
         M.Modal.init(elems);
-
-        // Initialize Tooltips
-        var tooltips = document.querySelectorAll('.tooltipped');
-        M.Tooltip.init(tooltips);
     });
 </script>
