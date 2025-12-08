@@ -631,5 +631,32 @@ namespace LifeProgApp.Controllers
                 return Json(new { success = false, message = $"Error: {ex.Message}" }, JsonRequestBehavior.AllowGet);
             }
         }
+
+        // ==========================================
+        // DASHBOARD CHARTS METHODS
+        // ==========================================
+
+        //public JsonResult GetBarData()
+        //{
+        //    try
+        //    {
+        //        using (var db = new Models.AppContext())
+        //        {
+        //            List<string> seriesList = new List<string>();  
+        //            var seriesData = db.archive_status.Select(x => x).ToList();
+        //            foreach (var item in collection)
+        //            {
+        //                seriesList.Add(ewanseries.stats_description)
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return Json(new { success = false, message = $"Error: {ex.Message}" }, JsonRequestBehavior.AllowGet);
+
+        //    }
+        //}
     }
+
+    
 }
