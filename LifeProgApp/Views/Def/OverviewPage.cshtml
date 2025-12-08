@@ -258,7 +258,7 @@
         }
 </style>
 
-<div ng-controller="LifeProgAppController" ng-init="loadUserStatusChart(); loadRegistrationTrend()" class="container">
+<div ng-controller="LifeProgAppController" ng-init="loadUserStatusChart(); getDataFunc()" class="container">
 
     <!-- Hero Section -->
     <div class="hero-section">
@@ -269,9 +269,16 @@
                 <i class="material-icons" style="vertical-align: middle; margin-right: 4px; font-size: 18px;">add_circle</i>
                 Add New User
             </button>
+
+
             <button class="btn-secondary" ng-click="getDataFunc()">
                 <i class="material-icons" style="vertical-align: middle; margin-right: 4px; font-size: 18px;">refresh</i>
                 Load Users
+            </button>
+
+            <button class="btn-outline-warning" ng-click="downloadPDF()">
+                <i class="material-icons" style="vertical-align: middle; margin-right: 4px; font-size: 18px;">refresh</i>
+                Download Report
             </button>
         </div>
     </div>
@@ -305,26 +312,7 @@
                     </div>
                 </div>
 
-                <!-- Chart 2: Line Chart -->
-                <div class="chart-card">
-                    <h3>User Registration Trend</h3>
-                    <div>
-                        <canvas id="registrationTrendChart"
-                                class="chart chart-line"
-                                chart-data="trendData"
-                                chart-labels="trendLabels"
-                                chart-series="trendSeries"
-                                chart-colors="trendColors"
-                                chart-options="{responsive: true, maintainAspectRatio: true, scales: {yAxes: [{ticks: {beginAtZero: true, stepSize: 1}}]}}">
-                        </canvas>
-                    </div>
-                    <div class="chart-stats">
-                        <span class="stat-chip blue">
-                            <i class="material-icons">trending_up</i>
-                            Total: {{(userStatusData[0] || 0) + (userStatusData[1] || 0)}}
-                        </span>
-                    </div>
-                </div>
+                
             </div>
 
             <!-- Table Section -->

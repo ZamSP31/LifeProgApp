@@ -477,4 +477,96 @@ app.controller("LifeProgAppController", ['$scope', '$window', '$timeout', 'LifeP
     };
 
 
+    // ========================================================================
+    // PDF MAKER
+    // ========================================================================
+
+    $scope.downloadPDF = function () {
+        // ==========================================================
+        // 1. LINK FONTS (Standardized for v0.2.7)
+        // ==========================================================
+        try {
+            // If this line fails, it means vfs_fonts.js didn't load from the CDN
+            if (typeof pdfFonts === 'undefined') {
+                alert("Error: The font script (vfs_fonts.js) did not load. Please check your internet connection.");
+                return;
+            }
+            // Link the virtual file system
+            pdfMake.vfs = pdfFonts.pdfMake.vfs;
+        } catch (e) {
+            console.error("Font Linking Error:", e);
+            alert("Error: Could not link fonts. Check console.");
+            return;
+        }
+
+        // ==========================================================
+        // 2. PREPARE DATA
+        // ==========================================================
+        var bodyData = [
+            [
+                { text: 'ID', style: 'tableHeader' },
+                { text: 'First Name', style: 'tableHeader' },
+                { text: 'Last Name', style: 'tableHeader' },
+                { text: 'Email', style: 'tableHeader' },
+                { text: 'Status', style: 'tableHeader' }
+            ]
+        ];
+
+        // Use the data loaded from your database
+        var dataSource = $scope.tableValue || [];
+
+        dataSource.forEach(function (user) {
+            var status = user.isArchived == 0 ? 'Active' : 'Archived';
+            bodyData.push([
+                user.registrationID.toString(),
+                user.firstName,
+                user.lastName,
+                user.email,
+                status
+            ]);
+        });
+
+        // ==========================================================
+        // 3. DEFINE DOCUMENT
+        // ==========================================================
+        var docDefinition = {
+            // 'Roboto' is the default font included in version 0.2.7
+            defaultStyle: {
+                font: 'Roboto'
+            },
+            content: [
+                { text: 'User Report', style: 'header' },
+                {
+                    style: 'tableExample',
+                    table: {
+                        headerRows: 1,
+                        widths: ['auto', '*', '*', '*', 'auto'],
+                        body: bodyData
+                    },
+                    layout: 'lightHorizontalLines'
+                }
+            ],
+            styles: {
+                header: {
+                    fontSize: 18,
+                    bold: true,
+                    margin: [0, 0, 0, 20]
+                },
+                tableHeader: {
+                    bold: true,
+                    fontSize: 12,
+                    color: 'black',
+                    fillColor: '#eeeeee'
+                },
+                tableExample: {
+                    margin: [0, 5, 0, 15]
+                }
+            }
+        };
+
+        // 4. DOWNLOAD
+        pdfMake.createPdf(docDefinition).download('user_report.pdf');
+    };
+
+
 }]);
