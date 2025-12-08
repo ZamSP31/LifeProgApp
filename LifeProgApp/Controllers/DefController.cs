@@ -136,19 +136,22 @@ namespace LifeProgApp.Controllers
         }
 
         // UPDATED: Fixed ArchiveData to accept the Model (Prevents 500 Error on Delete)
-        public JsonResult ArchiveData(tblRegistrationModel user)
+     
+        public JsonResult ArchiveData(tblRegistrationModel user) // <--- Correct: Accepts Model
         {
             try
             {
                 using (var db = new Models.AppContext())
                 {
-                    var getData = db.tbl_registration.Where(x => x.registrationID == user.registrationID).FirstOrDefault();
-                    if (getData != null)
+                    var dataToArchive = db.tbl_registration
+                                          .Where(x => x.registrationID == user.registrationID)
+                                          .FirstOrDefault();
+
+                    if (dataToArchive != null)
                     {
-                        getData.isArchived = 1;
+                        dataToArchive.isArchived = 1; // Soft delete
                         db.SaveChanges();
-                        var getNotArchiveData = db.tbl_registration.Where(x => x.isArchived == 0).ToList();
-                        return Json(new { success = true, data = getNotArchiveData }, JsonRequestBehavior.AllowGet);
+                        return Json(new { success = true, message = "User archived" }, JsonRequestBehavior.AllowGet);
                     }
                     return Json(new { success = false, message = "User not found" }, JsonRequestBehavior.AllowGet);
                 }

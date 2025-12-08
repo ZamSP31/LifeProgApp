@@ -130,58 +130,44 @@ app.controller("LifeProgAppController", ['$scope', '$window', '$timeout', 'LifeP
         });
     };
 
+    // ========================================================================
+    // DELETE / ARCHIVE FUNCTION
+    // ========================================================================
     $scope.archiveUser = function (registrationID) {
         Swal.fire({
             title: 'Are you sure?',
             text: "Do you want to archive this user?",
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#f44336',
+            confirmButtonColor: '#f44336', // Red color
             cancelButtonColor: '#9e9e9e',
-            confirmButtonText: 'Yes, archive it!',
-            cancelButtonText: 'Cancel'
+            confirmButtonText: 'Yes, archive it!'
         }).then((result) => {
             if (result.isConfirmed) {
+                // Call the Service you just wrote
                 var archivePromise = LifeProgAppService.archiveDataService(registrationID);
 
                 archivePromise.then(function (response) {
-                    Swal.fire({
-                        title: 'Archived!',
-                        text: 'User has been archived successfully',
-                        icon: 'success',
-                        confirmButtonColor: '#4caf50'
-                    });
-                    $scope.getDataFunc();
+                    if (response.data.success) {
+                        Swal.fire(
+                            'Archived!',
+                            'User has been archived.',
+                            'success'
+                        );
+                        // Refresh the table to show the user is gone
+                        $scope.getDataFunc();
+                    } else {
+                        Swal.fire('Error', response.data.message || 'Failed to archive', 'error');
+                    }
                 }, function (error) {
-                    console.error('Archive error:', error);
-                    Swal.fire({
-                        title: 'Error!',
-                        text: 'An error occurred while archiving',
-                        icon: 'error',
-                        confirmButtonColor: '#f44336'
-                    });
+                    console.error(error);
+                    Swal.fire('Error', 'Server error occurred.', 'error');
                 });
             }
         });
     };
 
-
-    // ========================================================================
-    // SWEETALERT & USER INTERACTION FUNCTIONS
-    // ========================================================================
-
-    $scope.showSweetAlert = function () {
-        Swal.fire({
-            title: 'Welcome!',
-            text: 'This is a SweetAlert2 popup with Materialize styling',
-            icon: 'success',
-            confirmButtonText: 'Cool!',
-            confirmButtonColor: '#1976d2',
-            showCancelButton: true,
-            cancelButtonText: 'Close'
-        });
-    };
-
+    
     $scope.selectUser = function (user) {
         Swal.fire({
             title: 'User Selected',
