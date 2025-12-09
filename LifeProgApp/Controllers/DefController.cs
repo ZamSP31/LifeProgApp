@@ -12,10 +12,7 @@ namespace LifeProgApp.Controllers
 {
     public class DefController : Controller
     {
-        // ====================================================================
-        // PAGE NAVIGATION ACTIONS
-        // ====================================================================
-
+        
         public ActionResult Index()
         {
             return View();
@@ -114,7 +111,7 @@ namespace LifeProgApp.Controllers
                         lastName = lastName.Trim(),
                         email = email.Trim(),
                         gender = gender,
-                        passwordHash = HashPassword(password), // ← Hash password!
+                        passwordHash = HashPassword(password), 
                         createdAt = DateTime.Now,
                         updatedAt = DateTime.Now,
                         isArchived = 0
@@ -156,7 +153,7 @@ namespace LifeProgApp.Controllers
                             x.createdAt,
                             x.updatedAt,
                             x.isArchived
-                            // NOTE: Never return passwordHash!
+                            
                         })
                         .ToList();
 
@@ -193,7 +190,7 @@ namespace LifeProgApp.Controllers
                         // Create archive status record WITH LINK to user
                         var archiveRecord = new ArchiveStatusModel
                         {
-                            registrationID = dataToArchive.registrationID,  // ← LINK IT
+                            registrationID = dataToArchive.registrationID, 
                             stat_description = $"{dataToArchive.firstName} {dataToArchive.lastName} archived",
                             created_at = DateTime.Now,
                             updated_at = DateTime.Now
@@ -212,120 +209,9 @@ namespace LifeProgApp.Controllers
                 return Json(new { success = false, message = $"Error: {ex.Message}" }, JsonRequestBehavior.AllowGet);
             }
         }
-        //// ====================================================================
-        //// NEW: RESTORE ARCHIVED USER
-        //// ====================================================================
-        //[HttpPost]
-        //public JsonResult RestoreUser(int registrationID)
-        //{
-        //    try
-        //    {
-        //        using (var db = new Models.AppContext())
-        //        {
-        //            var user = db.tbl_registration
-        //                        .Where(x => x.registrationID == registrationID)
-        //                        .FirstOrDefault();
+       
 
-        //            if (user != null)
-        //            {
-        //                user.isArchived = 0; // Restore user
-        //                user.updatedAt = DateTime.Now;
-
-        //                // Create restore record for chart
-        //                var restoreRecord = new ArchiveStatusModel
-        //                {
-        //                    stat_description = $"User {user.firstName} {user.lastName} restored",
-        //                    created_at = DateTime.Now,
-        //                    updated_at = DateTime.Now
-        //                };
-
-        //                db.archive_status.Add(restoreRecord);
-        //                db.SaveChanges();
-
-        //                return Json(new { success = true, message = "User restored successfully" }, JsonRequestBehavior.AllowGet);
-        //            }
-        //            return Json(new { success = false, message = "User not found" }, JsonRequestBehavior.AllowGet);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return Json(new { success = false, message = $"Error: {ex.Message}" }, JsonRequestBehavior.AllowGet);
-        //    }
-        //}
-
-        //// ====================================================================
-        //// NEW: GET ARCHIVE STATISTICS FOR CHARTS
-        //// ====================================================================
-        //[HttpGet]
-        //public JsonResult GetArchiveStats()
-        //{
-        //    try
-        //    {
-        //        using (var db = new Models.AppContext())
-        //        {
-        //            // Get archive counts by date
-        //            var archiveStats = db.archive_status
-        //                .GroupBy(a => DbFunctions.TruncateTime(a.created_at))
-        //                .Select(g => new
-        //                {
-        //                    date = g.Key,
-        //                    count = g.Count()
-        //                })
-        //                .OrderBy(x => x.date)
-        //                .Take(30) // Last 30 days
-        //                .ToList();
-
-        //            // Get total archived vs active users
-        //            var totalUsers = db.tbl_registration.Count();
-        //            var archivedUsers = db.tbl_registration.Count(u => u.isArchived == 1);
-        //            var activeUsers = totalUsers - archivedUsers;
-
-        //            var summary = new
-        //            {
-        //                totalUsers,
-        //                archivedUsers,
-        //                activeUsers,
-        //                dailyArchives = archiveStats
-        //            };
-
-        //            return Json(new { success = true, data = summary }, JsonRequestBehavior.AllowGet);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return Json(new { success = false, message = $"Error: {ex.Message}" }, JsonRequestBehavior.AllowGet);
-        //    }
-        //}
-
-        //// ====================================================================
-        //// NEW: GET ARCHIVE HISTORY
-        //// ====================================================================
-        //[HttpGet]
-        //public JsonResult GetArchiveHistory(int limit = 10)
-        //{
-        //    try
-        //    {
-        //        using (var db = new Models.AppContext())
-        //        {
-        //            var history = db.archive_status
-        //                .OrderByDescending(a => a.created_at)
-        //                .Take(limit)
-        //                .Select(a => new
-        //                {
-        //                    statusId = a.status_id,
-        //                    description = a.stat_description,
-        //                    createdAt = a.created_at
-        //                })
-        //                .ToList();
-
-        //            return Json(new { success = true, data = history }, JsonRequestBehavior.AllowGet);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return Json(new { success = false, message = $"Error: {ex.Message}" }, JsonRequestBehavior.AllowGet);
-        //    }
-        //}
+       
 
 
         // ====================================================================
@@ -340,7 +226,7 @@ namespace LifeProgApp.Controllers
             {
                 System.Diagnostics.Debug.WriteLine($"UpdateUser called with: ID={registrationID}, First={firstName}, Last={lastName}, Email={email}");
 
-                // Validate input
+                
                 if (registrationID <= 0)
                 {
                     return Json(new { success = false, message = "Invalid user ID" });
@@ -838,12 +724,10 @@ namespace LifeProgApp.Controllers
         }
 
         // ==========================================
-        // DASHBOARD CHARTS METHODS
+        // DASHBOARD CHARTS
         // ==========================================
 
-        // ==========================================
-        // CHART #1: USER STATUS DISTRIBUTION
-        // ==========================================
+        
 
         [HttpGet]
         public JsonResult GetUserStatusChart()
@@ -880,7 +764,7 @@ namespace LifeProgApp.Controllers
 
 
         // ====================================================================
-        // SIMPLIFIED PHOTO UPLOAD WITH DESCRIPTION
+        // PHOTO UPLOAD
         // ====================================================================
         [HttpPost]
         public JsonResult UploadPhotoWithDescription(string description)

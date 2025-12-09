@@ -402,26 +402,7 @@ app.controller("LifeProgAppController", ['$scope', '$window', '$timeout', 'LifeP
     // ========================================================================
 
     $scope.downloadPDF = function () {
-        // ==========================================================
-        // 1. LINK FONTS (Standardized for v0.2.7)
-        // ==========================================================
-        try {
-            // If this line fails, it means vfs_fonts.js didn't load from the CDN
-            if (typeof pdfFonts === 'undefined') {
-                alert("Error: The font script (vfs_fonts.js) did not load. Please check your internet connection.");
-                return;
-            }
-            // Link the virtual file system
-            pdfMake.vfs = pdfFonts.pdfMake.vfs;
-        } catch (e) {
-            console.error("Font Linking Error:", e);
-            alert("Error: Could not link fonts. Check console.");
-            return;
-        }
-
-        // ==========================================================
-        // 2. PREPARE DATA
-        // ==========================================================
+        
         var bodyData = [
             [
                 { text: 'ID', style: 'tableHeader' },
@@ -446,11 +427,9 @@ app.controller("LifeProgAppController", ['$scope', '$window', '$timeout', 'LifeP
             ]);
         });
 
-        // ==========================================================
-        // 3. DEFINE DOCUMENT
-        // ==========================================================
+     
         var docDefinition = {
-            // 'Roboto' is the default font included in version 0.2.7
+            
             defaultStyle: {
                 font: 'Roboto'
             },
