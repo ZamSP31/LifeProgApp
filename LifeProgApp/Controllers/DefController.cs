@@ -91,12 +91,30 @@ namespace LifeProgApp.Controllers
         {
             try
             {
+                // Validate input
+                if (string.IsNullOrWhiteSpace(firstName) || string.IsNullOrWhiteSpace(lastName) ||
+                    string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+                {
+                    return Json(new { success = false, message = "All fields are required" });
+                }
+
                 using (var db = new Models.AppContext())
                 {
+                    // Check if email already exists
+                    var existingUser = db.tbl_registration.FirstOrDefault(u => u.email == email);
+                    if (existingUser != null && existingUser.isArchived == 0)
+                    {
+                        return Json(new { success = false, message = "Email already registered" });
+                    }
+
+                    // Create new registration with ALL fields
                     var registration = new tblRegistrationModel
                     {
-                        firstName = firstName,
-                        lastName = lastName,
+                        firstName = firstName.Trim(),
+                        lastName = lastName.Trim(),
+                        email = email.Trim(),
+                        gender = gender,
+                        passwordHash = HashPassword(password), // ← Hash password!
                         createdAt = DateTime.Now,
                         updatedAt = DateTime.Now,
                         isArchived = 0
@@ -115,6 +133,7 @@ namespace LifeProgApp.Controllers
             }
         }
 
+
         // ====================================================================
         // JSON RESULT METHODS
         // ====================================================================
@@ -125,7 +144,22 @@ namespace LifeProgApp.Controllers
             {
                 using (var db = new Models.AppContext())
                 {
-                    var getData = db.tbl_registration.Where(x => x.isArchived == 0).ToList();
+                    var getData = db.tbl_registration
+                        .Where(x => x.isArchived == 0)
+                        .Select(x => new
+                        {
+                            x.registrationID,
+                            x.firstName,
+                            x.lastName,
+                            x.email,
+                            x.gender,
+                            x.createdAt,
+                            x.updatedAt,
+                            x.isArchived
+                            // NOTE: Never return passwordHash!
+                        })
+                        .ToList();
+
                     return Json(new { success = true, data = getData }, JsonRequestBehavior.AllowGet);
                 }
             }
@@ -298,33 +332,72 @@ namespace LifeProgApp.Controllers
         // UPDATE USER
         // ====================================================================
 
+       
         [HttpPost]
-        public JsonResult UpdateUser(tblRegistrationModel user)
+        public JsonResult UpdateUser(int registrationID, string firstName, string lastName, string email)
         {
             try
             {
+                System.Diagnostics.Debug.WriteLine($"UpdateUser called with: ID={registrationID}, First={firstName}, Last={lastName}, Email={email}");
+
+                // Validate input
+                if (registrationID <= 0)
+                {
+                    return Json(new { success = false, message = "Invalid user ID" });
+                }
+
+                if (string.IsNullOrWhiteSpace(firstName) || string.IsNullOrWhiteSpace(lastName))
+                {
+                    return Json(new { success = false, message = "First Name and Last Name are required" });
+                }
+
                 using (var db = new Models.AppContext())
                 {
                     var existingUser = db.tbl_registration
-                                         .Where(x => x.registrationID == user.registrationID)
+                                         .Where(x => x.registrationID == registrationID)
                                          .FirstOrDefault();
 
-                    if (existingUser != null)
+                    if (existingUser == null)
                     {
-                        existingUser.firstName = user.firstName;
-                        existingUser.lastName = user.lastName;
-                        existingUser.updatedAt = DateTime.Now;
-
-                        db.SaveChanges();
-
-                        return Json(new { success = true, message = "User updated successfully" }, JsonRequestBehavior.AllowGet);
+                        return Json(new { success = false, message = "User not found with ID: " + registrationID });
                     }
-                    return Json(new { success = false, message = "User not found" }, JsonRequestBehavior.AllowGet);
+
+                    // Update basic fields
+                    existingUser.firstName = firstName.Trim();
+                    existingUser.lastName = lastName.Trim();
+
+                    // Update email if provided and different
+                    if (!string.IsNullOrWhiteSpace(email) && email != existingUser.email)
+                    {
+                        // Check if new email is already in use
+                        var emailExists = db.tbl_registration
+                            .Any(u => u.email == email && u.registrationID != registrationID && u.isArchived == 0);
+
+                        if (emailExists)
+                        {
+                            return Json(new { success = false, message = "Email is already in use" });
+                        }
+
+                        existingUser.email = email.Trim();
+                    }
+
+                    existingUser.updatedAt = DateTime.Now;
+                    db.SaveChanges();
+
+                    return Json(new { success = true, message = "User updated successfully" });
                 }
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = $"Server Error: {ex.Message}" }, JsonRequestBehavior.AllowGet);
+                var errorMessage = ex.Message;
+                if (ex.InnerException != null)
+                {
+                    errorMessage += " | Inner: " + ex.InnerException.Message;
+                }
+
+                System.Diagnostics.Debug.WriteLine($"UpdateUser Error: {errorMessage}");
+
+                return Json(new { success = false, message = errorMessage });
             }
         }
 
@@ -794,7 +867,98 @@ namespace LifeProgApp.Controllers
                 return Json(new { success = false, message = $"Error: {ex.Message}" }, JsonRequestBehavior.AllowGet);
             }
         }
+
+
+        private string HashPassword(string password)
+        {
+            using (var sha256 = System.Security.Cryptography.SHA256.Create())
+            {
+                var hashedBytes = sha256.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                return Convert.ToBase64String(hashedBytes);
+            }
+        }
+
+
+        // ====================================================================
+        // SIMPLIFIED PHOTO UPLOAD WITH DESCRIPTION
+        // ====================================================================
+        [HttpPost]
+        public JsonResult UploadPhotoWithDescription(string description)
+        {
+            try
+            {
+                System.Diagnostics.Debug.WriteLine($"UploadPhotoWithDescription called with description: {description}");
+
+                if (Request.Files.Count == 0)
+                {
+                    System.Diagnostics.Debug.WriteLine("No file received");
+                    return Json(new { success = false, message = "No file received" });
+                }
+
+                HttpPostedFileBase file = Request.Files[0];
+                System.Diagnostics.Debug.WriteLine($"File received: {file?.FileName}, Size: {file?.ContentLength}");
+
+                if (file != null && file.ContentLength > 0)
+                {
+                    string uploadPath = Server.MapPath("/Content/Uploads/");
+                    if (!Directory.Exists(uploadPath))
+                    {
+                        Directory.CreateDirectory(uploadPath);
+                        System.Diagnostics.Debug.WriteLine($"Created directory: {uploadPath}");
+                    }
+
+                    string fileName = Guid.NewGuid() + Path.GetExtension(file.FileName);
+                    string filePath = Path.Combine(uploadPath, fileName);
+                    file.SaveAs(filePath);
+
+                    System.Diagnostics.Debug.WriteLine($"File saved to: {filePath}");
+
+                    using (var db = new Models.AppContext())
+                    {
+                        var newImage = new tblImagesModel
+                        {
+                            imageName = fileName,
+                            imagePath = "/Content/Uploads/" + fileName,
+                            description = description,
+                            createdAt = DateTime.Now,
+                            updateAt = DateTime.Now
+                        };
+
+                        db.tbl_images.Add(newImage);
+                        db.SaveChanges();
+
+                        System.Diagnostics.Debug.WriteLine($"Image record created with ID: {newImage.imageID}");
+
+                        return Json(new
+                        {
+                            success = true,
+                            message = "Photo uploaded successfully!",
+                            imageId = newImage.imageID,
+                            imagePath = "/Content/Uploads/" + fileName
+                        });
+                    }
+                }
+
+                return Json(new { success = false, message = "Upload failed - invalid file" });
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Upload error: {ex.Message}");
+                if (ex.InnerException != null)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Inner exception: {ex.InnerException.Message}");
+                }
+                return Json(new { success = false, message = $"Error: {ex.Message}" });
+            }
+        }
+
+
     }
 
+
+
+
+
+    // END OF CLASS
     
-}
+    }

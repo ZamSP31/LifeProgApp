@@ -19,6 +19,10 @@ namespace LifeProgApp.Models
         public int registrationID { get; set; }
         public string firstName { get; set; }
         public string lastName { get; set; }
+        public string email { get; set; }              
+        public string passwordHash { get; set; }       
+        public string gender { get; set; }
+
         public DateTime createdAt { get; set; }
         public DateTime updatedAt { get; set; }
 

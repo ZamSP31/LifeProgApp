@@ -199,6 +199,7 @@
     <Compile Include="Models\Map\tblRegistrationMap.cs" />
     <Compile Include="Models\tblImagesModel.cs" />
     <Compile Include="Models\tblRegistrationModel.cs" />
+    <Compile Include="Models\UpdateUserDto.cs" />
     <Compile Include="Models\UserInformation.cs" />
     <Compile Include="Models\UserModel.cs" />
     <Compile Include="Models\UserStatsModel.cs" />

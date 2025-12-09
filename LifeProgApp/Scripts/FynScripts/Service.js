@@ -30,7 +30,6 @@ app.service("LifeProgAppService", function ($http) {
 
     this.getDataService = function () {
         return $http.get("/Def/GetData");
-
     };
 
     // ========================================================================
@@ -60,16 +59,17 @@ app.service("LifeProgAppService", function ($http) {
     };
 
     // ========================================================================
-    // FILE UPLOAD SERVICES
+    // SIMPLIFIED PHOTO UPLOAD SERVICE
     // ========================================================================
 
-    this.uploadFile = function (file) {
+    this.uploadPhotoWithDescription = function (file, description) {
         var fd = new FormData();
         fd.append('file', file);
+        fd.append('description', description);
 
         return $http({
             method: "post",
-            url: "/Def/Upload",
+            url: "/Def/UploadPhotoWithDescription",
             data: fd,
             headers: { 'Content-Type': undefined },
             transformRequest: angular.identity
@@ -77,47 +77,7 @@ app.service("LifeProgAppService", function ($http) {
     };
 
     // ========================================================================
-    // NEW: QUEST PHOTO UPLOAD SERVICE
-    // ========================================================================
-    this.uploadQuestPhoto = function (file, questId) {
-        var fd = new FormData();
-        fd.append('file', file);
-
-        return $http({
-            method: "post",
-            url: "/Def/UploadQuestPhoto",
-            params: { questId: questId },
-            data: fd,
-            headers: { 'Content-Type': undefined },
-            transformRequest: angular.identity
-        });
-    };
-
-    // ========================================================================
-    // NEW: GET QUEST PHOTOS SERVICE
-    // ========================================================================
-    this.getQuestPhotos = function (questId) {
-        return $http({
-            method: "get",
-            url: "/Def/GetQuestPhotos",
-            params: { questId: questId }
-        });
-    };
-
-    // ========================================================================
-    // NEW: GET ALL QUEST PHOTOS SERVICE
-    // ========================================================================
-    this.getAllQuestPhotos = function (userId) {
-        userId = userId || 1;
-        return $http({
-            method: "get",
-            url: "/Def/GetAllQuestPhotos",
-            params: { userId: userId }
-        });
-    };
-
-    // ========================================================================
-    // CAROUSEL/GALLERY SERVICES
+    // GALLERY SERVICES
     // ========================================================================
 
     this.getCarouselImagesService = function () {
@@ -128,7 +88,7 @@ app.service("LifeProgAppService", function ($http) {
     };
 
     // ========================================================================
-    // DASHBOARD SERVICES (One % Database Integration)
+    // DASHBOARD SERVICES
     // ========================================================================
 
     // Dashboard Data Service

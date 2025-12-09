@@ -214,95 +214,62 @@ app.controller("LifeProgAppController", ['$scope', '$window', '$timeout', 'LifeP
 
 
     // ========================================================================
-    // UPDATE FUNCTIONS
+    // UPDATE FUNCTIONS - SIMPLE ALERT VERSION
     // ========================================================================
 
     $scope.updateUser = function (user) {
-        $scope.selectedUser = angular.copy(user);
-        var elem = document.getElementById('updateModal');
-        var instance = M.Modal.getInstance(elem);
-        instance.open();
-    };
+        console.log('Updating user:', user);
 
-    $scope.saveUpdate = function () {
-        if (!$scope.selectedUser.firstName || !$scope.selectedUser.lastName) {
-            Swal.fire({
-                title: 'Error!',
-                text: 'First Name and Last Name are required',
-                icon: 'error',
-                confirmButtonColor: '#f44336'
-            });
+        // Simple prompts for input
+        var firstName = prompt('Enter First Name:', user.firstName);
+        if (firstName === null) return; // User cancelled
+
+        var lastName = prompt('Enter Last Name:', user.lastName);
+        if (lastName === null) return; // User cancelled
+
+        var email = prompt('Enter Email:', user.email || '');
+        if (email === null) return; // User cancelled
+
+        // Validate
+        if (!firstName || !lastName) {
+            alert('First Name and Last Name are required!');
             return;
         }
 
+        // Prepare data
         var updateData = {
-            registrationID: $scope.selectedUser.registrationID,
-            firstName: $scope.selectedUser.firstName,
-            lastName: $scope.selectedUser.lastName
+            registrationID: user.registrationID,
+            firstName: firstName,
+            lastName: lastName,
+            email: email
         };
 
+        console.log('Update Data Being Sent:', updateData);
+
+        // Send update request
         var updatePromise = LifeProgAppService.updateUserService(updateData);
 
         updatePromise.then(function (response) {
+            console.log('Update Response:', response);
+
             if (response && response.data && response.data.success) {
-                Swal.fire({
-                    title: 'Updated!',
-                    text: 'User has been updated successfully',
-                    icon: 'success',
-                    confirmButtonColor: '#4caf50'
-                });
-                var elem = document.getElementById('updateModal');
-                var instance = M.Modal.getInstance(elem);
-                instance.close();
-                $scope.getDataFunc();
+                alert('User updated successfully!');
+                $scope.getDataFunc(); // Refresh the table
             } else {
-                Swal.fire({
-                    title: 'Error!',
-                    text: 'Failed to update user',
-                    icon: 'error',
-                    confirmButtonColor: '#f44336'
-                });
+                alert('Error: ' + (response.data.message || 'Failed to update user'));
             }
         }, function (error) {
             console.error('Update error:', error);
-            Swal.fire({
-                title: 'Error!',
-                text: 'An error occurred while updating',
-                icon: 'error',
-                confirmButtonColor: '#f44336'
-            });
+            alert('Error: ' + (error.data?.message || error.statusText || 'An error occurred'));
         });
     };
 
 
     // ========================================================================
-    // FILE UPLOAD FUNCTIONS
+    // SIMPLIFIED PHOTO UPLOAD WITH DESCRIPTION
     // ========================================================================
 
-    $scope.uploadfile = function () {
-        var input = document.getElementById('fileInput');
-        var file = input.files[0];
-
-        if (!file) {
-            alert("Please select a file first");
-            return;
-        }
-
-        var uploadData = LifeProgAppService.uploadFile(file);
-        uploadData.then(function (returnedData) {
-            if (returnedData && returnedData.data) {
-                alert(returnedData.data.Message);
-                $scope.getCarouselImages();
-            }
-        });
-    };
-
-    // ========================================================================
-    // NEW: QUEST PHOTO FUNCTIONS
-    // ========================================================================
-
-    // Upload photo for a specific quest
-    $scope.uploadQuestPhoto = function (questId) {
+    $scope.uploadPhotoToGallery = function () {
         var input = document.createElement('input');
         input.type = 'file';
         input.accept = 'image/*';
@@ -311,102 +278,68 @@ app.controller("LifeProgAppController", ['$scope', '$window', '$timeout', 'LifeP
             var file = e.target.files[0];
             if (!file) return;
 
-            Swal.fire({
-                title: 'Uploading...',
-                text: 'Please wait while we upload your photo',
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            });
+            // Check file size (5 MB = 5 * 1024 * 1024 bytes)
+            var maxSize = 5 * 1024 * 1024; // 5 MB
+            if (file.size > maxSize) {
+                alert('Error: File is too large. Maximum size is 5 MB. Your file is ' + (file.size / 1024 / 1024).toFixed(2) + ' MB');
+                return;
+            }
 
-            var uploadPromise = LifeProgAppService.uploadQuestPhoto(file, questId);
+            // Check file type
+            if (!file.type.startsWith('image/')) {
+                alert('Error: Please select an image file');
+                return;
+            }
+
+            // Ask for description
+            var description = prompt('Add a short description for this photo:');
+            if (description === null) return; // User cancelled
+
+            if (!description || description.trim() === '') {
+                alert('Please provide a description for the photo.');
+                return;
+            }
+
+            alert('Uploading photo...');
+
+            // Upload the file with description
+            var uploadPromise = LifeProgAppService.uploadPhotoWithDescription(file, description);
 
             uploadPromise.then(function (response) {
-                if (response.data.success) {
-                    Swal.fire({
-                        title: 'Success!',
-                        text: 'Photo uploaded successfully!',
-                        icon: 'success',
-                        confirmButtonColor: '#4caf50'
-                    });
+                console.log('Upload response:', response);
 
-                    $scope.loadTodaysQuests();
+                if (response.data && response.data.success) {
+                    alert('Success: Photo uploaded successfully!');
+                    // Reload the gallery - NO $scope.$apply() needed!
+                    $scope.getCarouselImages();
                 } else {
-                    Swal.fire({
-                        title: 'Error!',
-                        text: response.data.message || 'Upload failed',
-                        icon: 'error',
-                        confirmButtonColor: '#f44336'
-                    });
+                    alert('Error: ' + (response.data?.message || 'Upload failed'));
                 }
             }, function (error) {
                 console.error('Upload error:', error);
-                Swal.fire({
-                    title: 'Error!',
-                    text: 'An error occurred while uploading',
-                    icon: 'error',
-                    confirmButtonColor: '#f44336'
-                });
+
+                // Better error handling
+                var errorMessage = 'An error occurred while uploading';
+
+                if (error.status === 500) {
+                    errorMessage = 'Server error. File might be too large.';
+                } else if (error.status === 404) {
+                    errorMessage = 'Upload endpoint not found.';
+                } else if (error.data && error.data.message) {
+                    errorMessage = error.data.message;
+                }
+
+                alert('Error: ' + errorMessage);
             });
         };
 
         input.click();
     };
 
-    // View photos for a specific quest
-    $scope.viewQuestPhotos = function (questId, questTitle) {
-        var getPhotos = LifeProgAppService.getQuestPhotos(questId);
 
-        getPhotos.then(function (response) {
-            if (response.data.success && response.data.data.length > 0) {
-                var images = response.data.data;
-                var imageHtml = images.map(function (img) {
-                    return `<img src="${img.imagePath}" style="max-width:100%; margin:10px 0; border-radius:8px;">`;
-                }).join('');
-
-                Swal.fire({
-                    title: questTitle + ' - Photos',
-                    html: imageHtml,
-                    width: 600,
-                    confirmButtonText: 'Close',
-                    confirmButtonColor: '#1976d2'
-                });
-            } else {
-                Swal.fire({
-                    title: 'No Photos',
-                    text: 'No photos uploaded for this quest yet.',
-                    icon: 'info',
-                    confirmButtonColor: '#1976d2'
-                });
-            }
-        }, function (error) {
-            console.error('Error loading photos:', error);
-            Swal.fire({
-                title: 'Error!',
-                text: 'Failed to load photos',
-                icon: 'error',
-                confirmButtonColor: '#f44336'
-            });
-        });
-    };
-
-    // Load all quest photos for gallery (FIXED - removed carousel init)
-    $scope.loadAllQuestPhotos = function () {
-        console.log("=== Loading quest photos ===");
-        var userId = 1;
-        var getPhotos = LifeProgAppService.getAllQuestPhotos(userId);
-
-        getPhotos.then(function (response) {
-            console.log("Response:", response);
-            if (response.data.success) {
-                $scope.questPhotos = response.data.data;
-                console.log("Quest photos loaded:", $scope.questPhotos.length);
-            }
-        }, function (error) {
-            console.error('Error loading quest photos:', error);
-        });
-    };
+    // ========================================================================
+    // DASHBOARD QUEST FUNCTIONS
+    // ========================================================================
 
     // Load today's quests
     $scope.loadTodaysQuests = function () {
@@ -424,26 +357,13 @@ app.controller("LifeProgAppController", ['$scope', '$window', '$timeout', 'LifeP
 
 
     // ========================================================================
-    // CAROUSEL/GALLERY FUNCTIONS (FIXED)
+    // GALLERY FUNCTIONS
     // ========================================================================
 
     $scope.getCarouselImages = function () {
         var getData = LifeProgAppService.getCarouselImagesService();
         getData.then(function (returnedData) {
             $scope.carouselImages = returnedData.data;
-
-            // Only init carousel if images exist
-            if ($scope.carouselImages && $scope.carouselImages.length > 0) {
-                $timeout(function () {
-                    var elems = document.querySelectorAll('.carousel');
-                    if (elems.length > 0) {
-                        M.Carousel.init(elems, {
-                            fullWidth: true,
-                            indicators: true
-                        });
-                    }
-                }, 200);
-            }
         });
     };
 

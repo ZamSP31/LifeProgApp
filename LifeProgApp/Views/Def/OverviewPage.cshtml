@@ -312,7 +312,7 @@
                     </div>
                 </div>
 
-                
+
             </div>
 
             <!-- Table Section -->
@@ -345,6 +345,7 @@
                             </td>
                             <td>
                                 <div class="action-buttons">
+
                                     <button class="btn-icon edit"
                                             ng-click="updateUser(user); $event.stopPropagation();"
                                             ng-if="user.isArchived == 0">
@@ -373,44 +374,22 @@
     </div>
 </div>
 
-<!-- UPDATE Modal -->
-<div id="updateModal" class="modal">
-    <div class="modal-content">
-        <h4>Update User</h4>
-        <p style="color: #666; font-size: 14px;">Edit user information below</p>
+<!-- UPDATE alert -->
 
-        <div class="row">
-            <div class="input-field col s12">
-                <i class="material-icons prefix">person</i>
-                <input type="text" ng-model="selectedUser.firstName" id="editFirstName">
-                <label for="editFirstName" class="active">First Name</label>
-            </div>
-
-            <div class="input-field col s12">
-                <i class="material-icons prefix">person_outline</i>
-                <input type="text" ng-model="selectedUser.lastName" id="editLastName">
-                <label for="editLastName" class="active">Last Name</label>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal-footer">
-        <button class="btn grey waves-effect waves-light"
-                onclick="M.Modal.getInstance(document.getElementById('updateModal')).close()">
-            <i class="material-icons left">close</i>
-            Cancel
-        </button>
-        <button class="btn blue waves-effect waves-light" ng-click="saveUpdate()">
-            <i class="material-icons left">save</i>
-            Save Changes
-        </button>
-    </div>
-</div>
 
 <!-- Initialize Materialize Components -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         var elems = document.querySelectorAll('.modal');
-        M.Modal.init(elems);
+        var instances = M.Modal.init(elems, {
+            onOpenStart: function (modal) {
+                // Remove aria-hidden when modal opens
+                modal.removeAttribute('aria-hidden');
+            },
+            onCloseEnd: function (modal) {
+                // Add aria-hidden when modal closes
+                modal.setAttribute('aria-hidden', 'true');
+            }
+        });
     });
 </script>

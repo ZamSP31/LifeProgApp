@@ -20,7 +20,7 @@ namespace LifeProgApp.Models
         public string first_name { get; set; }
         public string last_name { get; set; }
         public string gender { get; set; }
-        //public DateTime dateOfBirth { get; set; }
+        
         public int current_level { get; set; }
         public int total_xp { get; set; }
         public DateTime last_login { get; set; }

@@ -20,7 +20,7 @@ namespace LifeProgApp.Models
         public int xp_reward { get; set; }
         public DateTime quest_date { get; set; }
         public bool is_completed { get; set; }
-        public int? imageID { get; set; }  // ADDED: Optional photo proof
+        public int? imageID { get; set; }  
         public DateTime created_at { get; set; }
         public DateTime updated_at { get; set; }
     }

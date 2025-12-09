@@ -18,6 +18,7 @@ namespace LifeProgApp.Models
         public int imageID { get; set; }
         public string imagePath { get; set; }
         public string imageName { get; set; }
+        public string description { get; set; }
         public int? questID { get; set; }  
         public DateTime createdAt { get; set; }
         public DateTime updateAt { get; set; }
