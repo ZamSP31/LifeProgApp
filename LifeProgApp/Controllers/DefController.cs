@@ -836,6 +836,24 @@ namespace LifeProgApp.Controllers
             }
         }
 
+        public JsonResult GetAllData()
+        {
+            try
+            {
+                using (var db = new Models.AppContext())
+                {
+                    // Get ALL users including archived ones
+                    var getAllData = db.tbl_registration.ToList();
+                    return Json(new { success = true, data = getAllData }, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = $"An error occurred: {ex.Message}" }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+
 
     }
 

@@ -186,6 +186,10 @@ app.service("LifeProgAppService", function ($http) {
         });
     };
 
+    this.getAllDataService = function () {
+        return $http.get("/Def/GetAllData");
+    };
+
 });
 
 app.filter("mvcDate", function () {
